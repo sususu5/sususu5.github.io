@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Posts on David Hua</title>
+        <link>https://sususu5.github.io/post/</link>
+        <description>Recent content in Posts on David Hua</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>David Hua</copyright>
+        <lastBuildDate>Fri, 23 May 2025 21:35:58 +0800</lastBuildDate><atom:link href="https://sususu5.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>System Design Basic 1</title>
+        <link>https://sususu5.github.io/p/system-design-basic-1/</link>
+        <pubDate>Fri, 23 May 2025 21:35:58 +0800</pubDate>
+        
+        <guid>https://sususu5.github.io/p/system-design-basic-1/</guid>
+        <description>&lt;h1 id=&#34;system-design-basic-1&#34;&gt;System Design Basic 1
+&lt;/h1&gt;&lt;h2 id=&#34;cap-theorem&#34;&gt;CAP Theorem
+&lt;/h2&gt;&lt;p&gt;Any distributed system cannot simultaneously guarantee all three of the following properties:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Consistency&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All nodes see the same data at the same time&lt;/li&gt;
+&lt;li&gt;All replicas in the system remain synchronized&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Availability&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The system remains operational even when some nodes fail&lt;/li&gt;
+&lt;li&gt;Every request receives a response (whether success or failure)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Partition Tolerance&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The system continues to operate despite network partitions (communication breakdowns between nodes)&lt;/li&gt;
+&lt;li&gt;The system functions normally even when messages are lost or delayed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;consistency-models&#34;&gt;Consistency Models
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Strong Consistency Models&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Linearizability&lt;/strong&gt;: The strongest consistency guarantee, where the system behaves as if there&amp;rsquo;s only one copy of data, with all operations having a global execution order.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Provides real-time guarantees&lt;/li&gt;
+&lt;li&gt;Highest performance overhead&lt;/li&gt;
+&lt;li&gt;Use Cases: Financial transaction systems, inventory management&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Sequential Consistency&lt;/strong&gt;: All processes see the same order of operations, but it doesn&amp;rsquo;t need to correspond to real-time ordering.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Slightly weaker than linearizability but more efficient&lt;/li&gt;
+&lt;li&gt;Guarantees consistent global operation ordering&lt;/li&gt;
+&lt;li&gt;Allows some latency&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Causal Consistency&lt;/strong&gt;: Only guarantees that causally related operations execute in the same order across all nodes.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Weaker than sequential consistency but more practical&lt;/li&gt;
+&lt;li&gt;Allows different ordering of concurrent operations&lt;/li&gt;
+&lt;li&gt;Maintains logical dependencies&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Weak Consistency Models&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Eventual Consistency&lt;/strong&gt;: The system guarantees that all replicas will eventually converge to the same state when no new updates occur.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;High availability and performance&lt;/li&gt;
+&lt;li&gt;Allows temporary inconsistencies&lt;/li&gt;
+&lt;li&gt;Requires conflict resolution mechanisms&lt;/li&gt;
+&lt;li&gt;Use Cases: DNS systems, social media feeds, shopping carts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Session Consistency&lt;/strong&gt;: Guarantees consistency within a single session, ensuring users see monotonic data within their session.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Read-your-writes: Users can see their own writes&lt;/li&gt;
+&lt;li&gt;Monotonic reads: Won&amp;rsquo;t read older data&lt;/li&gt;
+&lt;li&gt;Monotonic writes: Write operations execute in order&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
