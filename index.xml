@@ -7,7 +7,56 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>David Hua</copyright>
-        <lastBuildDate>Fri, 23 May 2025 21:35:58 +0800</lastBuildDate><atom:link href="https://sususu5.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 26 May 2025 20:51:24 +0800</lastBuildDate><atom:link href="https://sususu5.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>System Design Basic 2</title>
+        <link>https://sususu5.github.io/p/system-design-basic-2/</link>
+        <pubDate>Mon, 26 May 2025 20:51:24 +0800</pubDate>
+        
+        <guid>https://sususu5.github.io/p/system-design-basic-2/</guid>
+        <description>&lt;h1 id=&#34;system-design-basic-2&#34;&gt;System Design Basic 2
+&lt;/h1&gt;&lt;h2 id=&#34;sql-vs-nosql&#34;&gt;SQL vs NoSQL
+&lt;/h2&gt;&lt;h3 id=&#34;sql-relational-databases&#34;&gt;SQL (Relational Databases)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Key Examples&lt;/strong&gt;: MySQL, PostgreSQL, Oracle&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Core Philosophy&lt;/strong&gt;: Structured, Strong Consistency, and Transactions&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;When to choose&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Fixed &amp;amp; Complex Data Schema&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;E-commerce Orders&lt;/strong&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Requires Strong Consistency (ACID Transactions)&lt;/strong&gt;:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;nosql-non-relational-databases&#34;&gt;NoSQL (Non-Relational Databases)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Key Examples&lt;/strong&gt;: MongoDB (Document), Redis (Key-Value), Cassandra (Columnar)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Core Philosophy&lt;/strong&gt;: High Scalability, Flexibility, and Performance，usually accepts Eventual Consistency&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;When to choose&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Flexible or Evolving Data Schema&lt;/strong&gt;:&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Needs Extremely High Read/Write Throughput &amp;amp; Massive Data Storage&lt;/strong&gt;:&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Requires High Availability (Fault Tolerance) &amp;amp; Distributed Nature&lt;/strong&gt;:&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Eventual Consistency is Acceptable&lt;/strong&gt;:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>System Design Basic 1</title>
         <link>https://sususu5.github.io/p/system-design-basic-1/</link>
         <pubDate>Fri, 23 May 2025 21:35:58 +0800</pubDate>
@@ -90,6 +139,32 @@
 &lt;li&gt;Monotonic writes: Write operations execute in order&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;partition-tolerance&#34;&gt;Partition Tolerance
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Implementation Strategies&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Data Replication&lt;/strong&gt;: Maintaining copies across multiple nodes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sharding&lt;/strong&gt;: Distributing data across different nodes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Correctness Protocols&lt;/strong&gt;: Using Paxos, Raft for consistency&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Failure Detection&lt;/strong&gt;: Promptly identifying partition issues&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Recovery Mechanisms&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Anti-entropy&lt;/strong&gt;: Data synchronization after partition healing&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Read Repair&lt;/strong&gt;: Fixing inconsistencies during reads&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Design Patterns&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Leader Election&lt;/strong&gt;: Re-establishing primary nodes after partition&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Read/Write Quorums&lt;/strong&gt;: Setting R + W &amp;gt; N for consistency&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;

@@ -261,6 +261,7 @@
   <ol>
     <li><a href="#cap-theorem">CAP Theorem</a></li>
     <li><a href="#consistency-models">Consistency Models</a></li>
+    <li><a href="#partition-tolerance">Partition Tolerance</a></li>
   </ol>
 </nav>
         </div>
@@ -276,6 +277,14 @@
     <header class="article-header">
 
     <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/system-design/" >
+                System Design
+            </a>
+        
+    </header>
     
 
     <div class="article-title-wrapper">
@@ -412,6 +421,32 @@
 </ul>
 </li>
 </ul>
+<h2 id="partition-tolerance">Partition Tolerance
+</h2><ul>
+<li>
+<p><strong>Implementation Strategies</strong></p>
+<ul>
+<li><strong>Data Replication</strong>: Maintaining copies across multiple nodes</li>
+<li><strong>Sharding</strong>: Distributing data across different nodes</li>
+<li><strong>Correctness Protocols</strong>: Using Paxos, Raft for consistency</li>
+<li><strong>Failure Detection</strong>: Promptly identifying partition issues</li>
+</ul>
+</li>
+<li>
+<p><strong>Recovery Mechanisms</strong></p>
+<ul>
+<li><strong>Anti-entropy</strong>: Data synchronization after partition healing</li>
+<li><strong>Read Repair</strong>: Fixing inconsistencies during reads</li>
+</ul>
+</li>
+<li>
+<p><strong>Design Patterns</strong></p>
+<ul>
+<li><strong>Leader Election</strong>: Re-establishing primary nodes after partition</li>
+<li><strong>Read/Write Quorums</strong>: Setting R + W &gt; N for consistency</li>
+</ul>
+</li>
+</ul>
 
 </section>
 
@@ -428,6 +463,28 @@
     
 
     
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/system-design-basic-2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">System Design Basic 2</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
 
      
     

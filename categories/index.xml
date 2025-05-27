@@ -6,7 +6,16 @@
         <description>Recent content in Categories on David Hua</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <copyright>David Hua</copyright><atom:link href="https://sususu5.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <copyright>David Hua</copyright>
+        <lastBuildDate>Mon, 26 May 2025 20:51:24 +0800</lastBuildDate><atom:link href="https://sususu5.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>System Design</title>
+        <link>https://sususu5.github.io/categories/system-design/</link>
+        <pubDate>Mon, 26 May 2025 20:51:24 +0800</pubDate>
+        
+        <guid>https://sususu5.github.io/categories/system-design/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Test</title>
         <link>https://sususu5.github.io/categories/test/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
