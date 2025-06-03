@@ -7,7 +7,61 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>David Hua</copyright>
-        <lastBuildDate>Mon, 26 May 2025 20:51:24 +0800</lastBuildDate><atom:link href="https://sususu5.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 03 Jun 2025 16:18:56 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to Design a TikTok</title>
+        <link>https://sususu5.github.io/p/how-to-design-a-tiktok/</link>
+        <pubDate>Tue, 03 Jun 2025 16:18:56 +1000</pubDate>
+        
+        <guid>https://sususu5.github.io/p/how-to-design-a-tiktok/</guid>
+        <description>&lt;h1 id=&#34;how-to-design-a-tiktok&#34;&gt;How to design a TikTok
+&lt;/h1&gt;&lt;h2 id=&#34;functional-requirements&#34;&gt;Functional Requirements
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Upload video&lt;/li&gt;
+&lt;li&gt;Watch video&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;non-functional-requirements&#34;&gt;Non-functional Requirements
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Scabability&lt;/li&gt;
+&lt;li&gt;Availability&lt;/li&gt;
+&lt;li&gt;Video latency&lt;/li&gt;
+&lt;li&gt;Fault tolerance&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;assumption&#34;&gt;Assumption
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;1 billion daily active users&lt;/li&gt;
+&lt;li&gt;watch 100 / day, upload 1 / day&lt;/li&gt;
+&lt;li&gt;average video size: 10MB (Megabytes)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;sql-vs-nosql&#34;&gt;SQL vs NoSQL
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;SQL: pro: relation, con: sharding, hotspot&lt;/li&gt;
+&lt;li&gt;NoSQL: pro: cheap&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;how-to-store-videos&#34;&gt;How to store videos
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Blob (Binary Large Object)&lt;/strong&gt;: A type of object storage optimized for storing unstructured data, such as images. videos, and audio files. It is suitable for storage of large amounts of small pieces of files.&lt;/p&gt;
+&lt;h2 id=&#34;how-to-upload-a-video&#34;&gt;How to upload a video
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Since we don&amp;rsquo;t know what users are uploading, exposing the storage to the interface directly is unsafe&lt;/li&gt;
+&lt;li&gt;A better option is allocating a temporary space to store the original videos uploaded by users&lt;/li&gt;
+&lt;li&gt;When uploading, a video can be cut into small pieces to support breakpoint resume upload when a break happens and parallel uploading, which means multiple segments can be uploaded simultaneously (for a mobile app, the network environment is not stable)&lt;/li&gt;
+&lt;li&gt;Once all segments are uploaded, we can use a message queue and a worker pool to merge all the segments and do a file integrity verification. After that, this video should be encoded into different formats because videos of different qualities should be played according to devices and network.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;how-to-watch-a-video&#34;&gt;How to watch a video
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;To avoid hotspot of retrieving popular videos, we can place a CDN near user posiions to instead the visiting of blob storage&lt;/li&gt;
+&lt;li&gt;Although storing videos in CDN optimizes the transission speed, the latency is lowered, the extra cost of CDN is high, so we should ensure the videos in CDN are the most popular ones.&lt;/li&gt;
+&lt;li&gt;By introducing an extractor service, it can regularly find polular videos from the blob storage.&lt;/li&gt;
+&lt;li&gt;We can also introduce a streaming protocol like the HTTP Live Streaming from Apple&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;show-off&#34;&gt;Show off
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;We can introduce recommendation system to recommend videos to users rather than pushing original feed accoring to the tiem.&lt;/li&gt;
+&lt;li&gt;We can introduce a Two-Tower Model to embed the user feature and the video feature into two vectors. When a client want to retrieve videos, the system can recommend videos he may be interested in.&lt;/li&gt;
+&lt;li&gt;The pro is the vieo watching time of clients can be extended, the con is the extra cost og hiring a team to construct and deploy the model.&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
         <title>System Design Basic 2</title>
         <link>https://sususu5.github.io/p/system-design-basic-2/</link>
         <pubDate>Mon, 26 May 2025 20:51:24 +0800</pubDate>
@@ -53,6 +107,17 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;scale-up-vs-scale-out&#34;&gt;Scale Up vs Scale Out
+&lt;/h2&gt;&lt;h3 id=&#34;scale-up-vertical-scaling&#34;&gt;Scale Up (Vertical Scaling)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Definition: Adding more power to an existing machine&lt;/li&gt;
+&lt;li&gt;Situation: Startup or simple app, performance bottleneck on one machine (short term)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;scale-out-horizontal-scaling&#34;&gt;Scale Out (Horizontal Scaling)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Definition: Adding more machines to the system&lt;/li&gt;
+&lt;li&gt;Situation: High-traffic web application, cloud-native or containerized systems&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         </item>
