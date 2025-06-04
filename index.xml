@@ -16,49 +16,79 @@
         <description>&lt;h1 id=&#34;how-to-design-a-tiktok&#34;&gt;How to design a TikTok
 &lt;/h1&gt;&lt;h2 id=&#34;functional-requirements&#34;&gt;Functional Requirements
 &lt;/h2&gt;&lt;ol&gt;
-&lt;li&gt;Upload video&lt;/li&gt;
-&lt;li&gt;Watch video&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Video Upload&lt;/strong&gt;: Allow users to upload videos to the platform.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Video Playback&lt;/strong&gt;: Enable users to watch videos.&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;By developing these, we can construct a minimum viable product.&lt;/p&gt;
 &lt;h2 id=&#34;non-functional-requirements&#34;&gt;Non-functional Requirements
 &lt;/h2&gt;&lt;ol&gt;
-&lt;li&gt;Scabability&lt;/li&gt;
-&lt;li&gt;Availability&lt;/li&gt;
-&lt;li&gt;Video latency&lt;/li&gt;
-&lt;li&gt;Fault tolerance&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scalability&lt;/strong&gt;: Support a massive user base with high concurrency.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Availability&lt;/strong&gt;: Ensure the system remains operational even during partial failures.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Low Latency&lt;/strong&gt;: Minimize delays in video loading and playback.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fault Tolerance&lt;/strong&gt;: Handle hardware/network failures gracefully without data loss.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id=&#34;assumption&#34;&gt;Assumption
+&lt;h2 id=&#34;assumptions&#34;&gt;Assumptions
 &lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;1 billion daily active users&lt;/li&gt;
-&lt;li&gt;watch 100 / day, upload 1 / day&lt;/li&gt;
-&lt;li&gt;average video size: 10MB (Megabytes)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;User Base&lt;/strong&gt;: 1 billion daily active users (DAU).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Usage Patterns&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Each user watches 100 videos per day.&lt;/li&gt;
+&lt;li&gt;Each user uploads 1 video per day.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;sql-vs-nosql&#34;&gt;SQL vs NoSQL
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Video Size&lt;/strong&gt;: Average video size is 10MB.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;database-selection-sql-vs-nosql&#34;&gt;Database Selection: SQL vs NoSQL
 &lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;SQL: pro: relation, con: sharding, hotspot&lt;/li&gt;
-&lt;li&gt;NoSQL: pro: cheap&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SQL Databases&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Pros&lt;/em&gt;: Strong consistency, relational data support.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Cons&lt;/em&gt;: Challenges with sharding and hotspot management.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;how-to-store-videos&#34;&gt;How to store videos
-&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Blob (Binary Large Object)&lt;/strong&gt;: A type of object storage optimized for storing unstructured data, such as images. videos, and audio files. It is suitable for storage of large amounts of small pieces of files.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NoSQL Databases&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Pros&lt;/em&gt;: Cost-effective, horizontally scalable.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Cons&lt;/em&gt;: Limited transactional support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;video-storage-strategy&#34;&gt;Video Storage Strategy
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Blob Storage (Binary Large Object)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimized for unstructured data (videos, images, audio).&lt;/li&gt;
+&lt;li&gt;Ideal for storing and retrieving large volumes of small files efficiently.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;how-to-upload-a-video&#34;&gt;How to upload a video
 &lt;/h2&gt;&lt;ol&gt;
-&lt;li&gt;Since we don&amp;rsquo;t know what users are uploading, exposing the storage to the interface directly is unsafe&lt;/li&gt;
-&lt;li&gt;A better option is allocating a temporary space to store the original videos uploaded by users&lt;/li&gt;
-&lt;li&gt;When uploading, a video can be cut into small pieces to support breakpoint resume upload when a break happens and parallel uploading, which means multiple segments can be uploaded simultaneously (for a mobile app, the network environment is not stable)&lt;/li&gt;
+&lt;li&gt;Since we don&amp;rsquo;t know what users are uploading, exposing the storage to the interface directly is unsafe.&lt;/li&gt;
+&lt;li&gt;A better option is allocating a temporary space to store the original videos uploaded by users.&lt;/li&gt;
+&lt;li&gt;When uploading, a video can be cut into small pieces to support &lt;strong&gt;breakpoint resume upload&lt;/strong&gt; when a break happens, and also parallel uploading, which means multiple segments can be uploaded simultaneously. (for a mobile app, the network environment is not stable)&lt;/li&gt;
 &lt;li&gt;Once all segments are uploaded, we can use a message queue and a worker pool to merge all the segments and do a file integrity verification. After that, this video should be encoded into different formats because videos of different qualities should be played according to devices and network.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&#34;how-to-watch-a-video&#34;&gt;How to watch a video
 &lt;/h2&gt;&lt;ol&gt;
-&lt;li&gt;To avoid hotspot of retrieving popular videos, we can place a CDN near user posiions to instead the visiting of blob storage&lt;/li&gt;
-&lt;li&gt;Although storing videos in CDN optimizes the transission speed, the latency is lowered, the extra cost of CDN is high, so we should ensure the videos in CDN are the most popular ones.&lt;/li&gt;
-&lt;li&gt;By introducing an extractor service, it can regularly find polular videos from the blob storage.&lt;/li&gt;
-&lt;li&gt;We can also introduce a streaming protocol like the HTTP Live Streaming from Apple&lt;/li&gt;
+&lt;li&gt;To avoid hotspots caused by frequent access to popular videos, we can deploy a CDN near user locations to offload traffic from the blob storage.&lt;/li&gt;
+&lt;li&gt;Although storing videos in a CDN speeds up delivery and reduces latency, it also comes with high costs. So, we should make sure only the most popular videos are cached there.&lt;/li&gt;
+&lt;li&gt;By introducing an extractor service, it can regularly find popular videos from the blob storage and send them to the CDN, those outdated videos are replaced.&lt;/li&gt;
+&lt;li&gt;We can also introduce a streaming protocol like the HTTP Live Streaming from Apple to realize &amp;ldquo;stream-as-you-go&amp;rdquo; manner, which improves user experience.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&#34;show-off&#34;&gt;Show off
 &lt;/h2&gt;&lt;ol&gt;
-&lt;li&gt;We can introduce recommendation system to recommend videos to users rather than pushing original feed accoring to the tiem.&lt;/li&gt;
-&lt;li&gt;We can introduce a Two-Tower Model to embed the user feature and the video feature into two vectors. When a client want to retrieve videos, the system can recommend videos he may be interested in.&lt;/li&gt;
-&lt;li&gt;The pro is the vieo watching time of clients can be extended, the con is the extra cost og hiring a team to construct and deploy the model.&lt;/li&gt;
+&lt;li&gt;We can introduce a recommendation system to recommend videos to users rather than pushing original feed accoring to the time.&lt;/li&gt;
+&lt;li&gt;We can introduce a Two-Tower Model to embed user and video features into separate vectors. When a client requests videos, the system can recommend those that match their interests based on vector similarity.&lt;/li&gt;
+&lt;li&gt;The pro is the vieo watching time of clients can be extended, the con is the extra cost of hiring a team to construct and deploy the model.&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://sususu5.github.io/dev/static/images/sys_tiktok.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;System Architecture&#34;
+	
+	
+&gt;&lt;/p&gt;
 </description>
         </item>
         <item>

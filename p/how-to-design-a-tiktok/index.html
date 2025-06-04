@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="How to design a TikTok Functional Requirements Upload video Watch video Non-functional Requirements Scabability Availability Video latency Fault tolerance Assumption 1 billion daily active users watch 100 / day, upload 1 / day average video size: 10MB (Megabytes) SQL vs NoSQL SQL: pro: relation, con: sharding, hotspot NoSQL: pro: cheap How to store videos Blob (Binary Large Object): A type of object storage optimized for storing unstructured data, such as images. videos, and audio files. It is suitable for storage of large amounts of small pieces of files.\n">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="How to design a TikTok Functional Requirements Video Upload: Allow users to upload videos to the platform. Video Playback: Enable users to watch videos. By developing these, we can construct a minimum viable product.\nNon-functional Requirements Scalability: Support a massive user base with high concurrency. Availability: Ensure the system remains operational even during partial failures. Low Latency: Minimize delays in video loading and playback. Fault Tolerance: Handle hardware/network failures gracefully without data loss. Assumptions User Base: 1 billion daily active users (DAU). Usage Patterns: Each user watches 100 videos per day. Each user uploads 1 video per day. Video Size: Average video size is 10MB. Database Selection: SQL vs NoSQL SQL Databases: Pros: Strong consistency, relational data support. Cons: Challenges with sharding and hotspot management. NoSQL Databases: Pros: Cost-effective, horizontally scalable. Cons: Limited transactional support. Video Storage Strategy Blob Storage (Binary Large Object):\n">
 <title>How to Design a TikTok</title>
 
 <link rel='canonical' href='https://sususu5.github.io/p/how-to-design-a-tiktok/'>
 
 <link rel="stylesheet" href="/scss/style.min.946cca6c6259ef94ac55abfae7c7bf3291ea3ed5eea17ef77500b257217c6710.css"><meta property='og:title' content="How to Design a TikTok">
-<meta property='og:description' content="How to design a TikTok Functional Requirements Upload video Watch video Non-functional Requirements Scabability Availability Video latency Fault tolerance Assumption 1 billion daily active users watch 100 / day, upload 1 / day average video size: 10MB (Megabytes) SQL vs NoSQL SQL: pro: relation, con: sharding, hotspot NoSQL: pro: cheap How to store videos Blob (Binary Large Object): A type of object storage optimized for storing unstructured data, such as images. videos, and audio files. It is suitable for storage of large amounts of small pieces of files.\n">
+<meta property='og:description' content="How to design a TikTok Functional Requirements Video Upload: Allow users to upload videos to the platform. Video Playback: Enable users to watch videos. By developing these, we can construct a minimum viable product.\nNon-functional Requirements Scalability: Support a massive user base with high concurrency. Availability: Ensure the system remains operational even during partial failures. Low Latency: Minimize delays in video loading and playback. Fault Tolerance: Handle hardware/network failures gracefully without data loss. Assumptions User Base: 1 billion daily active users (DAU). Usage Patterns: Each user watches 100 videos per day. Each user uploads 1 video per day. Video Size: Average video size is 10MB. Database Selection: SQL vs NoSQL SQL Databases: Pros: Strong consistency, relational data support. Cons: Challenges with sharding and hotspot management. NoSQL Databases: Pros: Cost-effective, horizontally scalable. Cons: Limited transactional support. Video Storage Strategy Blob Storage (Binary Large Object):\n">
 <meta property='og:url' content='https://sususu5.github.io/p/how-to-design-a-tiktok/'>
 <meta property='og:site_name' content='David Hua'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-06-03T16:18:56&#43;10:00'/><meta property='article:modified_time' content='2025-06-03T16:18:56&#43;10:00'/>
 <meta name="twitter:title" content="How to Design a TikTok">
-<meta name="twitter:description" content="How to design a TikTok Functional Requirements Upload video Watch video Non-functional Requirements Scabability Availability Video latency Fault tolerance Assumption 1 billion daily active users watch 100 / day, upload 1 / day average video size: 10MB (Megabytes) SQL vs NoSQL SQL: pro: relation, con: sharding, hotspot NoSQL: pro: cheap How to store videos Blob (Binary Large Object): A type of object storage optimized for storing unstructured data, such as images. videos, and audio files. It is suitable for storage of large amounts of small pieces of files.\n">
+<meta name="twitter:description" content="How to design a TikTok Functional Requirements Video Upload: Allow users to upload videos to the platform. Video Playback: Enable users to watch videos. By developing these, we can construct a minimum viable product.\nNon-functional Requirements Scalability: Support a massive user base with high concurrency. Availability: Ensure the system remains operational even during partial failures. Low Latency: Minimize delays in video loading and playback. Fault Tolerance: Handle hardware/network failures gracefully without data loss. Assumptions User Base: 1 billion daily active users (DAU). Usage Patterns: Each user watches 100 videos per day. Each user uploads 1 video per day. Video Size: Average video size is 10MB. Database Selection: SQL vs NoSQL SQL Databases: Pros: Strong consistency, relational data support. Cons: Challenges with sharding and hotspot management. NoSQL Databases: Pros: Cost-effective, horizontally scalable. Cons: Limited transactional support. Video Storage Strategy Blob Storage (Binary Large Object):\n">
     </head>
     <body class="
     article-page
@@ -261,9 +261,9 @@
   <ol>
     <li><a href="#functional-requirements">Functional Requirements</a></li>
     <li><a href="#non-functional-requirements">Non-functional Requirements</a></li>
-    <li><a href="#assumption">Assumption</a></li>
-    <li><a href="#sql-vs-nosql">SQL vs NoSQL</a></li>
-    <li><a href="#how-to-store-videos">How to store videos</a></li>
+    <li><a href="#assumptions">Assumptions</a></li>
+    <li><a href="#database-selection-sql-vs-nosql">Database Selection: SQL vs NoSQL</a></li>
+    <li><a href="#video-storage-strategy">Video Storage Strategy</a></li>
     <li><a href="#how-to-upload-a-video">How to upload a video</a></li>
     <li><a href="#how-to-watch-a-video">How to watch a video</a></li>
     <li><a href="#show-off">Show off</a></li>
@@ -331,7 +331,7 @@
 
 
                 <time class="article-time--reading">
-                    2 minute read
+                    3 minute read
                 </time>
             </div>
         
@@ -349,49 +349,79 @@
     <h1 id="how-to-design-a-tiktok">How to design a TikTok
 </h1><h2 id="functional-requirements">Functional Requirements
 </h2><ol>
-<li>Upload video</li>
-<li>Watch video</li>
+<li><strong>Video Upload</strong>: Allow users to upload videos to the platform.</li>
+<li><strong>Video Playback</strong>: Enable users to watch videos.</li>
 </ol>
+<p>By developing these, we can construct a minimum viable product.</p>
 <h2 id="non-functional-requirements">Non-functional Requirements
 </h2><ol>
-<li>Scabability</li>
-<li>Availability</li>
-<li>Video latency</li>
-<li>Fault tolerance</li>
+<li><strong>Scalability</strong>: Support a massive user base with high concurrency.</li>
+<li><strong>Availability</strong>: Ensure the system remains operational even during partial failures.</li>
+<li><strong>Low Latency</strong>: Minimize delays in video loading and playback.</li>
+<li><strong>Fault Tolerance</strong>: Handle hardware/network failures gracefully without data loss.</li>
 </ol>
-<h2 id="assumption">Assumption
+<h2 id="assumptions">Assumptions
 </h2><ul>
-<li>1 billion daily active users</li>
-<li>watch 100 / day, upload 1 / day</li>
-<li>average video size: 10MB (Megabytes)</li>
+<li><strong>User Base</strong>: 1 billion daily active users (DAU).</li>
+<li><strong>Usage Patterns</strong>:
+<ul>
+<li>Each user watches 100 videos per day.</li>
+<li>Each user uploads 1 video per day.</li>
 </ul>
-<h2 id="sql-vs-nosql">SQL vs NoSQL
+</li>
+<li><strong>Video Size</strong>: Average video size is 10MB.</li>
+</ul>
+<h2 id="database-selection-sql-vs-nosql">Database Selection: SQL vs NoSQL
 </h2><ul>
-<li>SQL: pro: relation, con: sharding, hotspot</li>
-<li>NoSQL: pro: cheap</li>
+<li><strong>SQL Databases</strong>:
+<ul>
+<li><em>Pros</em>: Strong consistency, relational data support.</li>
+<li><em>Cons</em>: Challenges with sharding and hotspot management.</li>
 </ul>
-<h2 id="how-to-store-videos">How to store videos
-</h2><p><strong>Blob (Binary Large Object)</strong>: A type of object storage optimized for storing unstructured data, such as images. videos, and audio files. It is suitable for storage of large amounts of small pieces of files.</p>
+</li>
+<li><strong>NoSQL Databases</strong>:
+<ul>
+<li><em>Pros</em>: Cost-effective, horizontally scalable.</li>
+<li><em>Cons</em>: Limited transactional support.</li>
+</ul>
+</li>
+</ul>
+<h2 id="video-storage-strategy">Video Storage Strategy
+</h2><p><strong>Blob Storage (Binary Large Object)</strong>:</p>
+<ul>
+<li>Optimized for unstructured data (videos, images, audio).</li>
+<li>Ideal for storing and retrieving large volumes of small files efficiently.</li>
+</ul>
 <h2 id="how-to-upload-a-video">How to upload a video
 </h2><ol>
-<li>Since we don&rsquo;t know what users are uploading, exposing the storage to the interface directly is unsafe</li>
-<li>A better option is allocating a temporary space to store the original videos uploaded by users</li>
-<li>When uploading, a video can be cut into small pieces to support breakpoint resume upload when a break happens and parallel uploading, which means multiple segments can be uploaded simultaneously (for a mobile app, the network environment is not stable)</li>
+<li>Since we don&rsquo;t know what users are uploading, exposing the storage to the interface directly is unsafe.</li>
+<li>A better option is allocating a temporary space to store the original videos uploaded by users.</li>
+<li>When uploading, a video can be cut into small pieces to support <strong>breakpoint resume upload</strong> when a break happens, and also parallel uploading, which means multiple segments can be uploaded simultaneously. (for a mobile app, the network environment is not stable)</li>
 <li>Once all segments are uploaded, we can use a message queue and a worker pool to merge all the segments and do a file integrity verification. After that, this video should be encoded into different formats because videos of different qualities should be played according to devices and network.</li>
 </ol>
 <h2 id="how-to-watch-a-video">How to watch a video
 </h2><ol>
-<li>To avoid hotspot of retrieving popular videos, we can place a CDN near user posiions to instead the visiting of blob storage</li>
-<li>Although storing videos in CDN optimizes the transission speed, the latency is lowered, the extra cost of CDN is high, so we should ensure the videos in CDN are the most popular ones.</li>
-<li>By introducing an extractor service, it can regularly find polular videos from the blob storage.</li>
-<li>We can also introduce a streaming protocol like the HTTP Live Streaming from Apple</li>
+<li>To avoid hotspots caused by frequent access to popular videos, we can deploy a CDN near user locations to offload traffic from the blob storage.</li>
+<li>Although storing videos in a CDN speeds up delivery and reduces latency, it also comes with high costs. So, we should make sure only the most popular videos are cached there.</li>
+<li>By introducing an extractor service, it can regularly find popular videos from the blob storage and send them to the CDN, those outdated videos are replaced.</li>
+<li>We can also introduce a streaming protocol like the HTTP Live Streaming from Apple to realize &ldquo;stream-as-you-go&rdquo; manner, which improves user experience.</li>
 </ol>
 <h2 id="show-off">Show off
 </h2><ol>
-<li>We can introduce recommendation system to recommend videos to users rather than pushing original feed accoring to the tiem.</li>
-<li>We can introduce a Two-Tower Model to embed the user feature and the video feature into two vectors. When a client want to retrieve videos, the system can recommend videos he may be interested in.</li>
-<li>The pro is the vieo watching time of clients can be extended, the con is the extra cost og hiring a team to construct and deploy the model.</li>
+<li>We can introduce a recommendation system to recommend videos to users rather than pushing original feed accoring to the time.</li>
+<li>We can introduce a Two-Tower Model to embed user and video features into separate vectors. When a client requests videos, the system can recommend those that match their interests based on vector similarity.</li>
+<li>The pro is the vieo watching time of clients can be extended, the con is the extra cost of hiring a team to construct and deploy the model.</li>
 </ol>
+<p><img src="/dev/static/images/sys_tiktok.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="System Architecture"
+	
+	
+></p>
 
 </section>
 
