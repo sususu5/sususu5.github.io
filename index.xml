@@ -79,7 +79,7 @@
 &lt;li&gt;We can introduce a Two-Tower Model to embed user and video features into separate vectors. When a client requests videos, the system can recommend those that match their interests based on vector similarity.&lt;/li&gt;
 &lt;li&gt;The pro is the vieo watching time of clients can be extended, the con is the extra cost of hiring a team to construct and deploy the model.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;img src=&#34;https://sususu5.github.io/dev/static/images/sys_tiktok.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://sususu5.github.io/images/sys_tiktok.png&#34;
 	
 	
 	
