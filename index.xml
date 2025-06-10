@@ -93,6 +93,32 @@ Live update / eventually consistecy&lt;/p&gt;
 </description>
         </item>
         <item>
+        <title>GSoC Week 1</title>
+        <link>https://sususu5.github.io/p/gsoc-week-1/</link>
+        <pubDate>Thu, 05 Jun 2025 13:30:27 +1000</pubDate>
+        
+        <guid>https://sususu5.github.io/p/gsoc-week-1/</guid>
+        <description>&lt;h1 id=&#34;google-summer-of-code-week-1&#34;&gt;Google Summer of Code Week 1
+&lt;/h1&gt;&lt;h2 id=&#34;completed-work&#34;&gt;Completed work
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;The modifications proposed in the proposal have been applied to the parallel version of &lt;code&gt;nth_element&lt;/code&gt;, but the unit test still didn&amp;rsquo;t pass.&lt;/li&gt;
+&lt;li&gt;According to the error messages, the reason behind the failure is that the type returned by the &lt;code&gt;partition&lt;/code&gt; function is a &lt;code&gt;sender&lt;/code&gt;, which is not a &lt;code&gt;future&lt;/code&gt; expected by the &lt;code&gt;partition_iter&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;A specific implementation is planned to be added for the parallel version of the &lt;code&gt;nth_element&lt;/code&gt; to accommodate the Senders/Receivers mode.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;learnings&#34;&gt;Learnings
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Got a deeper understanding of the algorithms structure by reading the codebase. (&lt;code&gt;tag_parallel_algorithm&lt;/code&gt; wrapper -&amp;gt; &lt;code&gt;algorithm&lt;/code&gt; wrapper -&amp;gt; &lt;code&gt;sequential&lt;/code&gt; / &lt;code&gt;parallel&lt;/code&gt; implementation)&lt;/li&gt;
+&lt;li&gt;Definitions of some basic modes of parallel algorithms. (reduce, scan, copy, map)&lt;/li&gt;
+&lt;li&gt;The parallel version of the &lt;code&gt;nth_element&lt;/code&gt; algorithm uses partition rather than using a partitioner, which means certain proposed amendments from last year&amp;rsquo;s report might not be relevant anymore.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;plan-for-next-week&#34;&gt;Plan for Next Week
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Complete the fix of the &lt;code&gt;nth_element&lt;/code&gt;, and the pull request should be merged.&lt;/li&gt;
+&lt;li&gt;Start the fix for the next algorithm, the proposed one is &lt;code&gt;partial_sort&lt;/code&gt;, which may be further discussed.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>How to Design a TikTok</title>
         <link>https://sususu5.github.io/p/how-to-design-a-tiktok/</link>
         <pubDate>Tue, 03 Jun 2025 16:18:56 +1000</pubDate>
