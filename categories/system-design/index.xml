@@ -7,7 +7,92 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>David Hua</copyright>
-        <lastBuildDate>Tue, 03 Jun 2025 16:18:56 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/categories/system-design/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 07 Jun 2025 11:43:38 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/categories/system-design/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to Design a POI (Point of Interest) Service</title>
+        <link>https://sususu5.github.io/p/how-to-design-a-poi-point-of-interest-service/</link>
+        <pubDate>Sat, 07 Jun 2025 11:43:38 +1000</pubDate>
+        
+        <guid>https://sususu5.github.io/p/how-to-design-a-poi-point-of-interest-service/</guid>
+        <description>&lt;h1 id=&#34;how-to-design-a-poi-point-of-interest-service&#34;&gt;How to design a POI (Point of Interest) Service
+&lt;/h1&gt;&lt;h2 id=&#34;functional-requirements&#34;&gt;Functional Requirements
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Searching nearby locations&lt;/li&gt;
+&lt;li&gt;Viewing details&lt;/li&gt;
+&lt;li&gt;Owners can edit / delete&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;non-functional-requirements&#34;&gt;Non-functional Requirements
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Latency: 1s&lt;/li&gt;
+&lt;li&gt;Freshness: 1 day -&amp;gt; 1 hour&lt;/li&gt;
+&lt;li&gt;Scalability&lt;/li&gt;
+&lt;li&gt;Fault Tolerance&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;assumptions&#34;&gt;Assumptions
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;1B users -&amp;gt; 50% -&amp;gt; 500M DAU&lt;/li&gt;
+&lt;li&gt;200M businesses&lt;/li&gt;
+&lt;li&gt;Storage: NoSQL, SQL, in memory&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;database-selection&#34;&gt;Database Selection
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;In-memory: using multiple machines to shard the data, and the latency requirement is 1s, it&amp;rsquo;s expensive to use this&lt;/li&gt;
+&lt;li&gt;SQL: more expensive&lt;/li&gt;
+&lt;li&gt;NoSQL: cheaper, fast querying, self-sharding and optimization, suitable&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;how-to-scale-searching&#34;&gt;How to scale searching
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Master-Slave Model, separate reading and writing&lt;/li&gt;
+&lt;li&gt;This system is suitable for using this model because the need for reading is much more than writing&lt;/li&gt;
+&lt;li&gt;Not using whole table scaning here, given longtitude and latitude&lt;/li&gt;
+&lt;li&gt;Composite Index can not speed up the searching here because it follows the &lt;strong&gt;Leftmost Prefix Rule&lt;/strong&gt;, we can only search the range of the latitude once the longitude is matched, so it equals whole table scaning&lt;/li&gt;
+&lt;li&gt;Two other effective searching ways will be introduced in the following content&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;geohash&#34;&gt;GeoHash
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;GeoHash is a spatial hashing algorithm that continuously divides latitude and longitude ranges in half (using a Z-order curve), converting a (latitude, longitude) pair into a Base32 string that represents the geographic grid cell in which the location falls&lt;/li&gt;
+&lt;li&gt;It is a value stored in the database&lt;/li&gt;
+&lt;li&gt;The longer the string, the higher the precision of the geographical location&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;quad-tree&#34;&gt;Quad Tree
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;A Quad Tree is a tree data structure that recursively partitions a two-dimensional space into four quadrants (subregions). Each node in the tree has up to four children representing the top-left, top-right, bottom-left, and bottom-right regions&lt;/li&gt;
+&lt;li&gt;It is a memory structure&lt;/li&gt;
+&lt;li&gt;Quad Tree can be used as indicies to speed up the searching (k values), assume each node contains about 100 businesses&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Can it fits into memory?
+(business_id, latitude, longitute, short_brief) &amp;lt; 50B
+(200M / 100) * (100 * 50B) = 10GB, which can be stored in memory, meets the latency requirement in 1 second&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;How to build this tree?
+Need a starting point, stored on disk as a seed value&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;How to update this tree?
+Live update / eventually consistecy&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Adding a cache to store the latitude, longitude, and their corresponding business list, extra cost.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Construct the Quad Tree according to the deployment (west, middle, east USA), extra cost, availability&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://sususu5.github.io/images/sys_POI.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;System Architecture&#34;
+	
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>How to Design a TikTok</title>
         <link>https://sususu5.github.io/p/how-to-design-a-tiktok/</link>
         <pubDate>Tue, 03 Jun 2025 16:18:56 +1000</pubDate>

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="System Design Basic 2 SQL vs NoSQL SQL (Relational Databases) Key Examples: MySQL, PostgreSQL, Oracle Core Philosophy: Structured, Strong Consistency, and Transactions When to choose: Fixed &amp; Complex Data Schema:\nE-commerce Orders: Requires Strong Consistency (ACID Transactions):\nNoSQL (Non-Relational Databases) Key Examples: MongoDB (Document), Redis (Key-Value), Cassandra (Columnar) Core Philosophy: High Scalability, Flexibility, and Performance，usually accepts Eventual Consistency When to choose: Flexible or Evolving Data Schema:\nNeeds Extremely High Read/Write Throughput &amp; Massive Data Storage:\n">
-<title>System Design Basic 2</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="How to design a POI (Point of Interest) Service Functional Requirements Searching nearby locations Viewing details Owners can edit / delete Non-functional Requirements Latency: 1s Freshness: 1 day -&gt; 1 hour Scalability Fault Tolerance Assumptions 1B users -&gt; 50% -&gt; 500M DAU 200M businesses Storage: NoSQL, SQL, in memory Database Selection In-memory: using multiple machines to shard the data, and the latency requirement is 1s, it&rsquo;s expensive to use this SQL: more expensive NoSQL: cheaper, fast querying, self-sharding and optimization, suitable How to scale searching Master-Slave Model, separate reading and writing This system is suitable for using this model because the need for reading is much more than writing Not using whole table scaning here, given longtitude and latitude Composite Index can not speed up the searching here because it follows the Leftmost Prefix Rule, we can only search the range of the latitude once the longitude is matched, so it equals whole table scaning Two other effective searching ways will be introduced in the following content GeoHash GeoHash is a spatial hashing algorithm that continuously divides latitude and longitude ranges in half (using a Z-order curve), converting a (latitude, longitude) pair into a Base32 string that represents the geographic grid cell in which the location falls It is a value stored in the database The longer the string, the higher the precision of the geographical location Quad Tree A Quad Tree is a tree data structure that recursively partitions a two-dimensional space into four quadrants (subregions). Each node in the tree has up to four children representing the top-left, top-right, bottom-left, and bottom-right regions It is a memory structure Quad Tree can be used as indicies to speed up the searching (k values), assume each node contains about 100 businesses Can it fits into memory? (business_id, latitude, longitute, short_brief) &lt; 50B (200M / 100) * (100 * 50B) = 10GB, which can be stored in memory, meets the latency requirement in 1 second\n">
+<title>How to Design a POI (Point of Interest) Service</title>
 
-<link rel='canonical' href='https://sususu5.github.io/p/system-design-basic-2/'>
+<link rel='canonical' href='https://sususu5.github.io/p/how-to-design-a-poi-point-of-interest-service/'>
 
-<link rel="stylesheet" href="/scss/style.min.946cca6c6259ef94ac55abfae7c7bf3291ea3ed5eea17ef77500b257217c6710.css"><meta property='og:title' content="System Design Basic 2">
-<meta property='og:description' content="System Design Basic 2 SQL vs NoSQL SQL (Relational Databases) Key Examples: MySQL, PostgreSQL, Oracle Core Philosophy: Structured, Strong Consistency, and Transactions When to choose: Fixed &amp; Complex Data Schema:\nE-commerce Orders: Requires Strong Consistency (ACID Transactions):\nNoSQL (Non-Relational Databases) Key Examples: MongoDB (Document), Redis (Key-Value), Cassandra (Columnar) Core Philosophy: High Scalability, Flexibility, and Performance，usually accepts Eventual Consistency When to choose: Flexible or Evolving Data Schema:\nNeeds Extremely High Read/Write Throughput &amp; Massive Data Storage:\n">
-<meta property='og:url' content='https://sususu5.github.io/p/system-design-basic-2/'>
+<link rel="stylesheet" href="/scss/style.min.946cca6c6259ef94ac55abfae7c7bf3291ea3ed5eea17ef77500b257217c6710.css"><meta property='og:title' content="How to Design a POI (Point of Interest) Service">
+<meta property='og:description' content="How to design a POI (Point of Interest) Service Functional Requirements Searching nearby locations Viewing details Owners can edit / delete Non-functional Requirements Latency: 1s Freshness: 1 day -&gt; 1 hour Scalability Fault Tolerance Assumptions 1B users -&gt; 50% -&gt; 500M DAU 200M businesses Storage: NoSQL, SQL, in memory Database Selection In-memory: using multiple machines to shard the data, and the latency requirement is 1s, it&rsquo;s expensive to use this SQL: more expensive NoSQL: cheaper, fast querying, self-sharding and optimization, suitable How to scale searching Master-Slave Model, separate reading and writing This system is suitable for using this model because the need for reading is much more than writing Not using whole table scaning here, given longtitude and latitude Composite Index can not speed up the searching here because it follows the Leftmost Prefix Rule, we can only search the range of the latitude once the longitude is matched, so it equals whole table scaning Two other effective searching ways will be introduced in the following content GeoHash GeoHash is a spatial hashing algorithm that continuously divides latitude and longitude ranges in half (using a Z-order curve), converting a (latitude, longitude) pair into a Base32 string that represents the geographic grid cell in which the location falls It is a value stored in the database The longer the string, the higher the precision of the geographical location Quad Tree A Quad Tree is a tree data structure that recursively partitions a two-dimensional space into four quadrants (subregions). Each node in the tree has up to four children representing the top-left, top-right, bottom-left, and bottom-right regions It is a memory structure Quad Tree can be used as indicies to speed up the searching (k values), assume each node contains about 100 businesses Can it fits into memory? (business_id, latitude, longitute, short_brief) &lt; 50B (200M / 100) * (100 * 50B) = 10GB, which can be stored in memory, meets the latency requirement in 1 second\n">
+<meta property='og:url' content='https://sususu5.github.io/p/how-to-design-a-poi-point-of-interest-service/'>
 <meta property='og:site_name' content='David Hua'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-26T20:51:24&#43;08:00'/><meta property='article:modified_time' content='2025-05-26T20:51:24&#43;08:00'/>
-<meta name="twitter:title" content="System Design Basic 2">
-<meta name="twitter:description" content="System Design Basic 2 SQL vs NoSQL SQL (Relational Databases) Key Examples: MySQL, PostgreSQL, Oracle Core Philosophy: Structured, Strong Consistency, and Transactions When to choose: Fixed &amp; Complex Data Schema:\nE-commerce Orders: Requires Strong Consistency (ACID Transactions):\nNoSQL (Non-Relational Databases) Key Examples: MongoDB (Document), Redis (Key-Value), Cassandra (Columnar) Core Philosophy: High Scalability, Flexibility, and Performance，usually accepts Eventual Consistency When to choose: Flexible or Evolving Data Schema:\nNeeds Extremely High Read/Write Throughput &amp; Massive Data Storage:\n">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-06-07T11:43:38&#43;10:00'/><meta property='article:modified_time' content='2025-06-07T11:43:38&#43;10:00'/>
+<meta name="twitter:title" content="How to Design a POI (Point of Interest) Service">
+<meta name="twitter:description" content="How to design a POI (Point of Interest) Service Functional Requirements Searching nearby locations Viewing details Owners can edit / delete Non-functional Requirements Latency: 1s Freshness: 1 day -&gt; 1 hour Scalability Fault Tolerance Assumptions 1B users -&gt; 50% -&gt; 500M DAU 200M businesses Storage: NoSQL, SQL, in memory Database Selection In-memory: using multiple machines to shard the data, and the latency requirement is 1s, it&rsquo;s expensive to use this SQL: more expensive NoSQL: cheaper, fast querying, self-sharding and optimization, suitable How to scale searching Master-Slave Model, separate reading and writing This system is suitable for using this model because the need for reading is much more than writing Not using whole table scaning here, given longtitude and latitude Composite Index can not speed up the searching here because it follows the Leftmost Prefix Rule, we can only search the range of the latitude once the longitude is matched, so it equals whole table scaning Two other effective searching ways will be introduced in the following content GeoHash GeoHash is a spatial hashing algorithm that continuously divides latitude and longitude ranges in half (using a Z-order curve), converting a (latitude, longitude) pair into a Base32 string that represents the geographic grid cell in which the location falls It is a value stored in the database The longer the string, the higher the precision of the geographical location Quad Tree A Quad Tree is a tree data structure that recursively partitions a two-dimensional space into four quadrants (subregions). Each node in the tree has up to four children representing the top-left, top-right, bottom-left, and bottom-right regions It is a memory structure Quad Tree can be used as indicies to speed up the searching (k values), assume each node contains about 100 businesses Can it fits into memory? (business_id, latitude, longitute, short_brief) &lt; 50B (200M / 100) * (100 * 50B) = 10GB, which can be stored in memory, meets the latency requirement in 1 second\n">
     </head>
     <body class="
     article-page
@@ -259,18 +259,13 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#sql-vs-nosql">SQL vs NoSQL</a>
-      <ol>
-        <li><a href="#sql-relational-databases">SQL (Relational Databases)</a></li>
-        <li><a href="#nosql-non-relational-databases">NoSQL (Non-Relational Databases)</a></li>
-      </ol>
-    </li>
-    <li><a href="#scale-up-vs-scale-out">Scale Up vs Scale Out</a>
-      <ol>
-        <li><a href="#scale-up-vertical-scaling">Scale Up (Vertical Scaling)</a></li>
-        <li><a href="#scale-out-horizontal-scaling">Scale Out (Horizontal Scaling)</a></li>
-      </ol>
-    </li>
+    <li><a href="#functional-requirements">Functional Requirements</a></li>
+    <li><a href="#non-functional-requirements">Non-functional Requirements</a></li>
+    <li><a href="#assumptions">Assumptions</a></li>
+    <li><a href="#database-selection">Database Selection</a></li>
+    <li><a href="#how-to-scale-searching">How to scale searching</a></li>
+    <li><a href="#geohash">GeoHash</a></li>
+    <li><a href="#quad-tree">Quad Tree</a></li>
   </ol>
 </nav>
         </div>
@@ -298,7 +293,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/system-design-basic-2/">System Design Basic 2</a>
+            <a href="/p/how-to-design-a-poi-point-of-interest-service/">How to Design a POI (Point of Interest) Service</a>
         </h2>
     
         
@@ -320,7 +315,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">May 26, 2025</time>
+                <time class="article-time--published">Jun 07, 2025</time>
             </div>
         
 
@@ -335,7 +330,7 @@
 
 
                 <time class="article-time--reading">
-                    1 minute read
+                    2 minute read
                 </time>
             </div>
         
@@ -350,58 +345,83 @@
     <section class="article-content">
     
     
-    <h1 id="system-design-basic-2">System Design Basic 2
-</h1><h2 id="sql-vs-nosql">SQL vs NoSQL
-</h2><h3 id="sql-relational-databases">SQL (Relational Databases)
-</h3><ul>
-<li><strong>Key Examples</strong>: MySQL, PostgreSQL, Oracle</li>
-<li><strong>Core Philosophy</strong>: Structured, Strong Consistency, and Transactions</li>
-<li><strong>When to choose</strong>:
-<ul>
+    <h1 id="how-to-design-a-poi-point-of-interest-service">How to design a POI (Point of Interest) Service
+</h1><h2 id="functional-requirements">Functional Requirements
+</h2><ol>
+<li>Searching nearby locations</li>
+<li>Viewing details</li>
+<li>Owners can edit / delete</li>
+</ol>
+<h2 id="non-functional-requirements">Non-functional Requirements
+</h2><ol>
+<li>Latency: 1s</li>
+<li>Freshness: 1 day -&gt; 1 hour</li>
+<li>Scalability</li>
+<li>Fault Tolerance</li>
+</ol>
+<h2 id="assumptions">Assumptions
+</h2><ol>
+<li>1B users -&gt; 50% -&gt; 500M DAU</li>
+<li>200M businesses</li>
+<li>Storage: NoSQL, SQL, in memory</li>
+</ol>
+<h2 id="database-selection">Database Selection
+</h2><ol>
+<li>In-memory: using multiple machines to shard the data, and the latency requirement is 1s, it&rsquo;s expensive to use this</li>
+<li>SQL: more expensive</li>
+<li>NoSQL: cheaper, fast querying, self-sharding and optimization, suitable</li>
+</ol>
+<h2 id="how-to-scale-searching">How to scale searching
+</h2><ul>
+<li>Master-Slave Model, separate reading and writing</li>
+<li>This system is suitable for using this model because the need for reading is much more than writing</li>
+<li>Not using whole table scaning here, given longtitude and latitude</li>
+<li>Composite Index can not speed up the searching here because it follows the <strong>Leftmost Prefix Rule</strong>, we can only search the range of the latitude once the longitude is matched, so it equals whole table scaning</li>
+<li>Two other effective searching ways will be introduced in the following content</li>
+</ul>
+<h2 id="geohash">GeoHash
+</h2><ul>
+<li>GeoHash is a spatial hashing algorithm that continuously divides latitude and longitude ranges in half (using a Z-order curve), converting a (latitude, longitude) pair into a Base32 string that represents the geographic grid cell in which the location falls</li>
+<li>It is a value stored in the database</li>
+<li>The longer the string, the higher the precision of the geographical location</li>
+</ul>
+<h2 id="quad-tree">Quad Tree
+</h2><ul>
+<li>A Quad Tree is a tree data structure that recursively partitions a two-dimensional space into four quadrants (subregions). Each node in the tree has up to four children representing the top-left, top-right, bottom-left, and bottom-right regions</li>
+<li>It is a memory structure</li>
+<li>Quad Tree can be used as indicies to speed up the searching (k values), assume each node contains about 100 businesses</li>
+</ul>
+<ol>
 <li>
-<p><strong>Fixed &amp; Complex Data Schema</strong>:</p>
-<ul>
-<li><strong>E-commerce Orders</strong>:</li>
-</ul>
+<p>Can it fits into memory?
+(business_id, latitude, longitute, short_brief) &lt; 50B
+(200M / 100) * (100 * 50B) = 10GB, which can be stored in memory, meets the latency requirement in 1 second</p>
 </li>
 <li>
-<p><strong>Requires Strong Consistency (ACID Transactions)</strong>:</p>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="nosql-non-relational-databases">NoSQL (Non-Relational Databases)
-</h3><ul>
-<li><strong>Key Examples</strong>: MongoDB (Document), Redis (Key-Value), Cassandra (Columnar)</li>
-<li><strong>Core Philosophy</strong>: High Scalability, Flexibility, and Performance，usually accepts Eventual Consistency</li>
-<li><strong>When to choose</strong>:
-<ul>
-<li>
-<p><strong>Flexible or Evolving Data Schema</strong>:</p>
+<p>How to build this tree?
+Need a starting point, stored on disk as a seed value</p>
 </li>
 <li>
-<p><strong>Needs Extremely High Read/Write Throughput &amp; Massive Data Storage</strong>:</p>
+<p>How to update this tree?
+Live update / eventually consistecy</p>
 </li>
 <li>
-<p><strong>Requires High Availability (Fault Tolerance) &amp; Distributed Nature</strong>:</p>
+<p>Adding a cache to store the latitude, longitude, and their corresponding business list, extra cost.</p>
 </li>
 <li>
-<p><strong>Eventual Consistency is Acceptable</strong>:</p>
+<p>Construct the Quad Tree according to the deployment (west, middle, east USA), extra cost, availability</p>
 </li>
-</ul>
-</li>
-</ul>
-<h2 id="scale-up-vs-scale-out">Scale Up vs Scale Out
-</h2><h3 id="scale-up-vertical-scaling">Scale Up (Vertical Scaling)
-</h3><ul>
-<li>Definition: Adding more power to an existing machine</li>
-<li>Situation: Startup or simple app, performance bottleneck on one machine (short term)</li>
-</ul>
-<h3 id="scale-out-horizontal-scaling">Scale Out (Horizontal Scaling)
-</h3><ul>
-<li>Definition: Adding more machines to the system</li>
-<li>Situation: High-traffic web application, cloud-native or containerized systems</li>
-</ul>
+</ol>
+<p><img src="/images/sys_POI.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="System Architecture"
+	
+	
+></p>
 
 </section>
 
@@ -426,12 +446,12 @@
             
                 
 <article class="">
-    <a href="/p/how-to-design-a-poi-point-of-interest-service/">
+    <a href="/p/how-to-design-a-tiktok/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">How to Design a POI (Point of Interest) Service</h2>
+            <h2 class="article-title">How to Design a TikTok</h2>
         </div>
     </a>
 </article>
@@ -439,12 +459,12 @@
             
                 
 <article class="">
-    <a href="/p/how-to-design-a-tiktok/">
+    <a href="/p/system-design-basic-2/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">How to Design a TikTok</h2>
+            <h2 class="article-title">System Design Basic 2</h2>
         </div>
     </a>
 </article>
