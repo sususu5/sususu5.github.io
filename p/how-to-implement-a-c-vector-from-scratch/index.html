@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="How to Implement a C++ Vector From Scratch Introduction std::vector is a sequence container in C++ that represents a dynamic array. It is part of the C++ Standard Template Library (STL) and provides the ability to store and manipulate a collection of elements with automatic memory management and flexible resizing.\nstd::vector is the most commonly used container in C++ development, whether you are passionate about competitive coding or interested in C++ programming, learning the low-level implementation of it helps you gain a more thorough understanding of C++ language and prepares you for better using it in the future.\n">
+<title>How to Implement a C&#43;&#43; Vector From Scratch</title>
+
+<link rel='canonical' href='https://sususu5.github.io/p/how-to-implement-a-c-vector-from-scratch/'>
+
+<link rel="stylesheet" href="/scss/style.min.946cca6c6259ef94ac55abfae7c7bf3291ea3ed5eea17ef77500b257217c6710.css"><meta property='og:title' content="How to Implement a C++ Vector From Scratch">
+<meta property='og:description' content="How to Implement a C++ Vector From Scratch Introduction std::vector is a sequence container in C++ that represents a dynamic array. It is part of the C++ Standard Template Library (STL) and provides the ability to store and manipulate a collection of elements with automatic memory management and flexible resizing.\nstd::vector is the most commonly used container in C++ development, whether you are passionate about competitive coding or interested in C++ programming, learning the low-level implementation of it helps you gain a more thorough understanding of C++ language and prepares you for better using it in the future.\n">
+<meta property='og:url' content='https://sususu5.github.io/p/how-to-implement-a-c-vector-from-scratch/'>
+<meta property='og:site_name' content='David Hua'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-06-11T13:51:00&#43;10:00'/><meta property='article:modified_time' content='2025-06-11T13:51:00&#43;10:00'/>
+<meta name="twitter:title" content="How to Implement a C++ Vector From Scratch">
+<meta name="twitter:description" content="How to Implement a C++ Vector From Scratch Introduction std::vector is a sequence container in C++ that represents a dynamic array. It is part of the C++ Standard Template Library (STL) and provides the ability to store and manipulate a collection of elements with automatic memory management and flexible resizing.\nstd::vector is the most commonly used container in C++ development, whether you are passionate about competitive coding or interested in C++ programming, learning the low-level implementation of it helps you gain a more thorough understanding of C++ language and prepares you for better using it in the future.\n">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_c169b61978309be5.png" width="300"
+                            height="299" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">👋</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">David Hua</a></h1>
+            <h2 class="site-description">Welcome to my blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/sususu5'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/david-zhengnan-hua-8840202b7/'
+                        target="_blank"
+                        title="LinkedIn"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#prerequisite-knowledge">Prerequisite Knowledge</a>
+      <ol>
+        <li><a href="#rule-of-five">Rule of Five</a></li>
+        <li><a href="#reinterpret_casttexpression"><code>reinterpret_cast&lt;T&gt;(expression)</code></a></li>
+        <li><a href="#operator-new-and-operator-delete"><code>::operator new</code> and <code>::operator delete</code></a></li>
+      </ol>
+    </li>
+    <li><a href="#step-by-step-implementation">Step by Step Implementation</a>
+      <ol>
+        <li><a href="#private-fields">Private Fields</a></li>
+        <li><a href="#constructors-and-destructor">Constructors and Destructor</a></li>
+      </ol>
+    </li>
+    <li><a href="#assignments">Assignments</a>
+      <ol>
+        <li><a href="#element-insertion">Element Insertion</a></li>
+        <li><a href="#element-access">Element Access</a></li>
+        <li><a href="#element-removal--container-modification">Element Removal &amp; Container Modification</a></li>
+        <li><a href="#memory-management">Memory Management</a></li>
+      </ol>
+    </li>
+    <li><a href="#complete-code">Complete Code</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/c&#43;&#43;/" >
+                C&#43;&#43;
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/how-to-implement-a-c-vector-from-scratch/">How to Implement a C&#43;&#43; Vector From Scratch</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 11, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    10 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="how-to-implement-a-c-vector-from-scratch">How to Implement a C++ Vector From Scratch
+</h1><h2 id="introduction">Introduction
+</h2><p><code>std::vector</code> is a sequence container in C++ that represents a dynamic array. It is part of the C++ Standard Template Library (STL) and provides the ability to store and manipulate a collection of elements with automatic memory management and flexible resizing.</p>
+<p><code>std::vector</code> is the most commonly used container in C++ development, whether you are passionate about competitive coding or interested in C++ programming, learning the low-level implementation of it helps you gain a more thorough understanding of C++ language and prepares you for better using it in the future.</p>
+<h2 id="prerequisite-knowledge">Prerequisite Knowledge
+</h2><h3 id="rule-of-five">Rule of Five
+</h3><p>The <strong>Rule of Five</strong> in C++ is a guideline helping developers manage resource ownership in user-defined types.<br>
+To be specific, if your class manages a resource, and you define any one of the following five special member functions, you should probably define all five to ensure correct behavior:</p>
+<ul>
+<li>Destructor</li>
+<li>Copy Constructor</li>
+<li>Copy Assignment Operator</li>
+<li>Move Constructor</li>
+<li>Move Assignment Operator</li>
+</ul>
+<h3 id="reinterpret_casttexpression"><code>reinterpret_cast&lt;T&gt;(expression)</code>
+</h3><p><code>reinterpret_cast</code> is a low-level type conversion operator in C++ used to reinterpret the binary representation of a value as a different type.</p>
+<p>Two important thing about it is that it does not perform any type safety checks and it simply treats the bits of one type as if they were another.</p>
+<h3 id="operator-new-and-operator-delete"><code>::operator new</code> and <code>::operator delete</code>
+</h3><p><code>::operator new</code> is a built-in global function in C++ that allocates raw, uninitialized memory on the heap.</p>
+<p>It is not the same as the new expression, though the new expression uses it internally. The <code>::</code> scope resolution prefix ensures you’re calling the global version of operator new, avoiding any class-specific overloads.</p>
+<p><code>::operator delete</code> is the global deallocation function to free raw memory that was previously allocated using <code>::operator new</code>.</p>
+<h2 id="step-by-step-implementation">Step by Step Implementation
+</h2><h3 id="private-fields">Private Fields
+</h3><p>To implement a <code>std::vector</code>, firstly we need to define the private fields of this class.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">T* data_ = nullptr;     // data_ is a pointer pointing to a generic type T
+</span></span><span class="line"><span class="cl">size_t capacity_ = 0;
+</span></span><span class="line"><span class="cl">size_t size_ = 0;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Additionally, we need to define the initial size of a vector and the growth factor.
+The value of a growth factor is the growing rate of a vector once the capacity is full.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="k">static</span> <span class="n">constexpr</span> <span class="n">size_t</span> <span class="n">startSize_</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">constexpr</span> <span class="n">double</span> <span class="n">growthFactor_</span> <span class="o">=</span> <span class="mf">1.6</span><span class="p">;</span>    <span class="o">//</span> <span class="k">if</span> <span class="n">growthFactor</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">the</span> <span class="n">vector</span> <span class="n">will</span> <span class="n">be</span> <span class="n">doubled</span> <span class="n">when</span> <span class="n">it</span><span class="s1">&#39;s full</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="constructors-and-destructor">Constructors and Destructor
+</h3><p>According to <strong>Rule of Five</strong>, we need to implement three types of constructors for out vector class, which are Default Constructor, Copy Constructor, and Move Constructor.<br>
+In <strong>Default Constructor</strong>, we need to allocate initial capacity memory for the underlying data and initialzie the member variables.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Vector() {
+</span></span><span class="line"><span class="cl">    data_ = reinterpret_cast&lt;T*&gt;(::operator new(startSize_ * sizeof(T)));
+</span></span><span class="line"><span class="cl">    capacity_ = startSize_;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In <strong>Copy Constructor</strong>, we need to allocate capacity for a new vector and keep the input object unchanged.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">Vector</span><span class="p">(</span><span class="k">const</span> <span class="n">Vector</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">:</span> <span class="n">size_</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">size_</span><span class="p">),</span> <span class="n">capacity_</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">capacity_</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data_</span> <span class="o">=</span> <span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">T</span><span class="o">*&gt;</span><span class="p">(::</span><span class="n">operator</span> <span class="n">new</span><span class="p">(</span><span class="n">capacity_</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">new</span> <span class="p">(</span><span class="n">data_</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In <strong>Move Constructor</strong>, we need to transfer the ownership of resources from one object to another instead of copying, which means the input object of this constructor should be set to void.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Vector(Vector&amp;&amp; other) noexcept 
+</span></span><span class="line"><span class="cl">    : data_(other.data_), capacity_(other.capacity_), size_(other.size_) {
+</span></span><span class="line"><span class="cl">    other.data_ = nullptr;
+</span></span><span class="line"><span class="cl">    other.capacity_ = 0;
+</span></span><span class="line"><span class="cl">    other.size_ = 0;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In the <strong>Destructor</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">~Vector() {
+</span></span><span class="line"><span class="cl">    for (size_t i = 0; i &lt; size_; ++i) {
+</span></span><span class="line"><span class="cl">        data_[i].~T();
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    ::operator delete(data_);
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="assignments">Assignments
+</h2><p>According to the <strong>Rule of Five</strong>, both the copy assignemnt and the move assignemnt must be implemented for this class.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">//</span> <span class="n">Copy</span> <span class="n">assignment</span>
+</span></span><span class="line"><span class="cl"><span class="n">Vector</span><span class="o">&amp;</span> <span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Vector</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Vector</span> <span class="n">temp</span><span class="p">(</span><span class="n">other</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">swap</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">*</span><span class="n">this</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="n">Move</span> <span class="n">assignment</span>
+</span></span><span class="line"><span class="cl"><span class="n">Vector</span><span class="o">&amp;</span> <span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Vector</span><span class="o">&amp;&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="n">noexcept</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Vector</span> <span class="n">temp</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">swap</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">*</span><span class="n">this</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Out of convenience, we can also define a specific swap function, which swaps another object with <code>this</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">void swap(Vector&amp; other) noexcept {
+</span></span><span class="line"><span class="cl">    std::swap(data_, other.data_);
+</span></span><span class="line"><span class="cl">    std::swap(capacity_, other.capacity_);
+</span></span><span class="line"><span class="cl">    std::swap(size_, other.size_);
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="element-insertion">Element Insertion
+</h3><p>In <code>std::vector</code>, the <code>push_back</code> method appends a new element to the end of the container and there are two versions should be implemented, which are the one handling the left value</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">void</span> <span class="n">push_back</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">size_</span> <span class="o">==</span> <span class="n">capacity_</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">reserve</span><span class="p">(</span><span class="n">capacity_</span> <span class="err">?</span> <span class="n">static_cast</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">capacity_</span> <span class="o">*</span> <span class="n">growthFactor_</span><span class="p">)</span> <span class="p">:</span> <span class="n">startSize_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">size_</span> <span class="o">&lt;</span> <span class="n">capacity_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">data_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">new</span> <span class="p">(</span><span class="n">data_</span> <span class="o">+</span> <span class="n">size_</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="n">elem</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">++</span><span class="n">size_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>and the one handling the right value.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">void push_back(T&amp;&amp; elem) {
+</span></span><span class="line"><span class="cl">    if (size_ == capacity_) {
+</span></span><span class="line"><span class="cl">        reserve(capacity_ ? static_cast&lt;size_t&gt;(capacity_ * growthFactor_) : startSize_);
+</span></span><span class="line"><span class="cl">        assert(size_ &lt; capacity_);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    assert(data_);
+</span></span><span class="line"><span class="cl">    new (data_ + size_) T(std::move(elem));
+</span></span><span class="line"><span class="cl">    ++size_;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="element-access">Element Access
+</h3><p>To allow users to access elements by index, we need to overload two versions of operator[], which handle both const and non-const objects.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">operator</span><span class="p">[](</span><span class="n">size_t</span> <span class="n">idx</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">idx</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">data_</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="n">T</span><span class="o">&amp;</span> <span class="n">operator</span><span class="p">[](</span><span class="n">size_t</span> <span class="n">idx</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">idx</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">data_</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In addition, common operations like <code>front</code>, <code>back</code>, and <code>size</code> should also be added, which are</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">front</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">size_</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">operator</span><span class="p">[](</span><span class="mi">0</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">back</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">size_</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">operator</span><span class="p">[](</span><span class="n">size_</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="n">size_t</span> <span class="n">size</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">size_</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">size_t</span> <span class="n">capacity</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">capacity_</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="ne">bool</span> <span class="n">empty</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">size_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="element-removal--container-modification">Element Removal &amp; Container Modification
+</h3><p>There are three operations to remove elemnt from a vector, which are <code>pop_back</code>, <code>erase</code>, and <code>clear</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">// Remove element at specific index
+</span></span><span class="line"><span class="cl">void erase(size_t idx) {
+</span></span><span class="line"><span class="cl">    if (idx &gt;= size_) return;
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    // Destroy the element at idx
+</span></span><span class="line"><span class="cl">    data_[idx].~T();
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    // Move elements to fill the gap
+</span></span><span class="line"><span class="cl">    for (size_t j = idx; j &lt; size_ - 1; ++j) {
+</span></span><span class="line"><span class="cl">        new (data_ + j) T(std::move(data_[j + 1]));
+</span></span><span class="line"><span class="cl">        data_[j + 1].~T();
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    --size_;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Remove all elements in the vector
+</span></span><span class="line"><span class="cl">void clear() {
+</span></span><span class="line"><span class="cl">    for (size_t i = 0; i &lt; size_; ++i) {
+</span></span><span class="line"><span class="cl">        data_[i].~T();
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    size_ = 0;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Remove an element at the back of this vector
+</span></span><span class="line"><span class="cl">void pop_back() {
+</span></span><span class="line"><span class="cl">    if (size_ &gt; 0) {
+</span></span><span class="line"><span class="cl">        --size_;
+</span></span><span class="line"><span class="cl">        data_[size_].~T();
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="memory-management">Memory Management
+</h3><p>The <code>reserve</code> operation is used to pre-allocate memory for a container, which is useful when you know how many elements will be added to a vector.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">void reserve(size_t newCapacity) {
+</span></span><span class="line"><span class="cl">    if (capacity_ &gt;= newCapacity) return;
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    auto* newData = reinterpret_cast&lt;T*&gt;(::operator new(newCapacity * sizeof(T)));
+</span></span><span class="line"><span class="cl">    for (size_t i = 0; i &lt; size_; ++i) {
+</span></span><span class="line"><span class="cl">        new (newData + i) T(std::move(data_[i]));
+</span></span><span class="line"><span class="cl">        data_[i].~T();
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    ::operator delete(data_);
+</span></span><span class="line"><span class="cl">    data_ = newData;
+</span></span><span class="line"><span class="cl">    capacity_ = newCapacity;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="complete-code">Complete Code
+</h2><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="c1">#include &lt;cstddef&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;cassert&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;cstdlib&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;utility&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;new&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;vector&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">template</span> <span class="o">&lt;</span><span class="n">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="n">Vector</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="n">public</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Default</span> <span class="n">constructor</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Vector</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">data_</span> <span class="o">=</span> <span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">T</span><span class="o">*&gt;</span><span class="p">(::</span><span class="n">operator</span> <span class="n">new</span><span class="p">(</span><span class="n">startSize_</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">capacity_</span> <span class="o">=</span> <span class="n">startSize_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Copy</span> <span class="n">constructor</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Vector</span><span class="p">(</span><span class="k">const</span> <span class="n">Vector</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">:</span> <span class="n">size_</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">size_</span><span class="p">),</span> <span class="n">capacity_</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">capacity_</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">data_</span> <span class="o">=</span> <span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">T</span><span class="o">*&gt;</span><span class="p">(::</span><span class="n">operator</span> <span class="n">new</span><span class="p">(</span><span class="n">capacity_</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">new</span> <span class="p">(</span><span class="n">data_</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">data_</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Move</span> <span class="n">constructor</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Vector</span><span class="p">(</span><span class="n">Vector</span><span class="o">&amp;&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="n">noexcept</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">:</span> <span class="n">data_</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">data_</span><span class="p">),</span> <span class="n">capacity_</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">capacity_</span><span class="p">),</span> <span class="n">size_</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">size_</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">other</span><span class="o">.</span><span class="n">data_</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">other</span><span class="o">.</span><span class="n">capacity_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">other</span><span class="o">.</span><span class="n">size_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Copy</span> <span class="n">assignment</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Vector</span><span class="o">&amp;</span> <span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Vector</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Vector</span> <span class="n">temp</span><span class="p">(</span><span class="n">other</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">swap</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">*</span><span class="n">this</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Move</span> <span class="n">assignment</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Vector</span><span class="o">&amp;</span> <span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Vector</span><span class="o">&amp;&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="n">noexcept</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">other</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Vector</span> <span class="n">temp</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">swap</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">*</span><span class="n">this</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Destructor</span>
+</span></span><span class="line"><span class="cl">    <span class="o">~</span><span class="n">Vector</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">data_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.~</span><span class="n">T</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">::</span><span class="n">operator</span> <span class="n">delete</span><span class="p">(</span><span class="n">data_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Left</span> <span class="n">value</span> <span class="n">reference</span>
+</span></span><span class="line"><span class="cl">    <span class="n">void</span> <span class="n">push_back</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">size_</span> <span class="o">==</span> <span class="n">capacity_</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">reserve</span><span class="p">(</span><span class="n">capacity_</span> <span class="err">?</span> <span class="n">static_cast</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">capacity_</span> <span class="o">*</span> <span class="n">growthFactor_</span><span class="p">)</span> <span class="p">:</span> <span class="n">startSize_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">assert</span><span class="p">(</span><span class="n">size_</span> <span class="o">&lt;</span> <span class="n">capacity_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">data_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">new</span> <span class="p">(</span><span class="n">data_</span> <span class="o">+</span> <span class="n">size_</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="n">elem</span><span class="p">);</span>  <span class="o">//</span> <span class="n">Fixed</span><span class="p">:</span> <span class="n">construct</span> <span class="n">at</span> <span class="n">correct</span> <span class="n">position</span> <span class="n">with</span> <span class="n">elem</span>
+</span></span><span class="line"><span class="cl">        <span class="o">++</span><span class="n">size_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Right</span> <span class="n">value</span> <span class="n">reference</span>
+</span></span><span class="line"><span class="cl">    <span class="n">void</span> <span class="n">push_back</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">elem</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">size_</span> <span class="o">==</span> <span class="n">capacity_</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">reserve</span><span class="p">(</span><span class="n">capacity_</span> <span class="err">?</span> <span class="n">static_cast</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">capacity_</span> <span class="o">*</span> <span class="n">growthFactor_</span><span class="p">)</span> <span class="p">:</span> <span class="n">startSize_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">assert</span><span class="p">(</span><span class="n">size_</span> <span class="o">&lt;</span> <span class="n">capacity_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">data_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">new</span> <span class="p">(</span><span class="n">data_</span> <span class="o">+</span> <span class="n">size_</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">move</span><span class="p">(</span><span class="n">elem</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="o">++</span><span class="n">size_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Const</span> <span class="n">value</span> <span class="n">overload</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">operator</span><span class="p">[](</span><span class="n">size_t</span> <span class="n">idx</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">idx</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">data_</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="n">Non</span><span class="o">-</span><span class="k">const</span> <span class="n">value</span> <span class="n">overload</span>
+</span></span><span class="line"><span class="cl">    <span class="n">T</span><span class="o">&amp;</span> <span class="n">operator</span><span class="p">[](</span><span class="n">size_t</span> <span class="n">idx</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">idx</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">data_</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">front</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">size_</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">operator</span><span class="p">[](</span><span class="mi">0</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">back</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">size_</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">operator</span><span class="p">[](</span><span class="n">size_</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">size_t</span> <span class="n">size</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">size_</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">size_t</span> <span class="n">capacity</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">capacity_</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="ne">bool</span> <span class="n">empty</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">size_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">void</span> <span class="n">reserve</span><span class="p">(</span><span class="n">size_t</span> <span class="n">newCapacity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">capacity_</span> <span class="o">&gt;=</span> <span class="n">newCapacity</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">auto</span><span class="o">*</span> <span class="n">newData</span> <span class="o">=</span> <span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">T</span><span class="o">*&gt;</span><span class="p">(::</span><span class="n">operator</span> <span class="n">new</span><span class="p">(</span><span class="n">newCapacity</span> <span class="o">*</span> <span class="n">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">new</span> <span class="p">(</span><span class="n">newData</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">move</span><span class="p">(</span><span class="n">data_</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">data_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.~</span><span class="n">T</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">::</span><span class="n">operator</span> <span class="n">delete</span><span class="p">(</span><span class="n">data_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">data_</span> <span class="o">=</span> <span class="n">newData</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">capacity_</span> <span class="o">=</span> <span class="n">newCapacity</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">void</span> <span class="n">erase</span><span class="p">(</span><span class="n">size_t</span> <span class="n">idx</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">idx</span> <span class="o">&gt;=</span> <span class="n">size_</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="o">//</span> <span class="n">Destroy</span> <span class="n">the</span> <span class="n">element</span> <span class="n">at</span> <span class="n">idx</span>
+</span></span><span class="line"><span class="cl">        <span class="n">data_</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.~</span><span class="n">T</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="o">//</span> <span class="n">Move</span> <span class="n">elements</span> <span class="n">to</span> <span class="n">fill</span> <span class="n">the</span> <span class="n">gap</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">j</span> <span class="o">=</span> <span class="n">idx</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">size_</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">new</span> <span class="p">(</span><span class="n">data_</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">move</span><span class="p">(</span><span class="n">data_</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">data_</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.~</span><span class="n">T</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">--</span><span class="n">size_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">void</span> <span class="n">clear</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size_</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">data_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.~</span><span class="n">T</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">size_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">void</span> <span class="n">pop_back</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">size_</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="o">--</span><span class="n">size_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">data_</span><span class="p">[</span><span class="n">size_</span><span class="p">]</span><span class="o">.~</span><span class="n">T</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">private</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">void</span> <span class="n">swap</span><span class="p">(</span><span class="n">Vector</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="n">noexcept</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="p">::</span><span class="n">swap</span><span class="p">(</span><span class="n">data_</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">data_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="p">::</span><span class="n">swap</span><span class="p">(</span><span class="n">capacity_</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">capacity_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="p">::</span><span class="n">swap</span><span class="p">(</span><span class="n">size_</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">size_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">T</span><span class="o">*</span> <span class="n">data_</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">size_t</span> <span class="n">capacity_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">size_t</span> <span class="n">size_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">static</span> <span class="n">constexpr</span> <span class="n">size_t</span> <span class="n">startSize_</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">static</span> <span class="n">constexpr</span> <span class="n">double</span> <span class="n">growthFactor_</span> <span class="o">=</span> <span class="mf">1.6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="ne">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Vector</span><span class="o">&lt;</span><span class="ne">int</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="ne">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">v</span><span class="o">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="ne">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="nb">assert</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">100</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="ne">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">v</span><span class="o">.</span><span class="n">erase</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">50</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="ne">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">assert</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">v</span><span class="o">.</span><span class="n">erase</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">Vector</span><span class="o">&lt;</span><span class="ne">int</span><span class="o">&gt;</span> <span class="n">v2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v2</span><span class="o">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">v2</span><span class="o">.</span><span class="n">front</span><span class="p">()</span> <span class="o">==</span> <span class="mi">42</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">v2</span><span class="o">.</span><span class="n">back</span><span class="p">()</span> <span class="o">==</span> <span class="mi">42</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">Vector</span><span class="o">&lt;</span><span class="ne">int</span><span class="o">&gt;</span> <span class="n">v3</span> <span class="o">=</span> <span class="n">v2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">v3</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">assert</span><span class="p">(</span><span class="n">v3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">42</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 David Hua
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
