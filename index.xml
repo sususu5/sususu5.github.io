@@ -7,7 +7,39 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>David Hua</copyright>
-        <lastBuildDate>Wed, 11 Jun 2025 13:51:00 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 19 Jun 2025 22:03:52 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>GSoC Week 2</title>
+        <link>https://sususu5.github.io/p/gsoc-week-2/</link>
+        <pubDate>Thu, 19 Jun 2025 22:03:52 +1000</pubDate>
+        
+        <guid>https://sususu5.github.io/p/gsoc-week-2/</guid>
+        <description>&lt;h1 id=&#34;google-summer-of-code---week-2&#34;&gt;Google Summer of Code - Week 2
+&lt;/h1&gt;&lt;h2 id=&#34;completed-work&#34;&gt;Completed Work
+&lt;/h2&gt;&lt;h3 id=&#34;nth_element&#34;&gt;&lt;code&gt;nth_element&lt;/code&gt;
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Fixed all issues with the parallel version of &lt;code&gt;nth_element&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;All unit tests now pass&lt;/li&gt;
+&lt;li&gt;Full CI pipeline passes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;partial_sort&#34;&gt;&lt;code&gt;partial_sort&lt;/code&gt;
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Analyzed the algorithm structure of &lt;code&gt;partial_sort&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Identified key components for parallel implementation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;key-learnings&#34;&gt;Key Learnings
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Technical Insight&lt;/strong&gt;: When using &lt;code&gt;just&lt;/code&gt; and &lt;code&gt;then&lt;/code&gt; functions in HPX:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Include: &lt;code&gt;#include &amp;lt;hpx/execution_base/stdexec_forward.hpp&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Use namespace: &lt;code&gt;namespace ex = hpx::execution::experimental&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;next-week-goals&#34;&gt;Next Week Goals
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Complete the implementation fix for &lt;code&gt;partial_sort&lt;/code&gt; and more algorithms&lt;/li&gt;
+&lt;li&gt;Ensure comprehensive testing and CI compliance&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>How to Implement a C&#43;&#43; Vector From Scratch</title>
         <link>https://sususu5.github.io/p/how-to-implement-a-c-vector-from-scratch/</link>
         <pubDate>Wed, 11 Jun 2025 13:51:00 +1000</pubDate>

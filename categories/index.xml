@@ -7,7 +7,15 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>David Hua</copyright>
-        <lastBuildDate>Wed, 11 Jun 2025 13:51:00 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 19 Jun 2025 22:03:52 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Google Summer of Code</title>
+        <link>https://sususu5.github.io/categories/google-summer-of-code/</link>
+        <pubDate>Thu, 19 Jun 2025 22:03:52 +1000</pubDate>
+        
+        <guid>https://sususu5.github.io/categories/google-summer-of-code/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>C&#43;&#43;</title>
         <link>https://sususu5.github.io/categories/c&#43;&#43;/</link>
         <pubDate>Wed, 11 Jun 2025 13:51:00 +1000</pubDate>
@@ -21,14 +29,6 @@
         <pubDate>Sat, 07 Jun 2025 11:43:38 +1000</pubDate>
         
         <guid>https://sususu5.github.io/categories/system-design/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Google Summer of Code</title>
-        <link>https://sususu5.github.io/categories/google-summer-of-code/</link>
-        <pubDate>Thu, 05 Jun 2025 13:30:27 +1000</pubDate>
-        
-        <guid>https://sususu5.github.io/categories/google-summer-of-code/</guid>
         <description></description>
         </item>
         <item>
