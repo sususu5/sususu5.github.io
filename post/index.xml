@@ -7,7 +7,39 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>David Hua</copyright>
-        <lastBuildDate>Thu, 19 Jun 2025 22:03:52 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 26 Jun 2025 23:10:59 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>GSoC Week 3</title>
+        <link>https://sususu5.github.io/p/gsoc-week-3/</link>
+        <pubDate>Thu, 26 Jun 2025 23:10:59 +1000</pubDate>
+        
+        <guid>https://sususu5.github.io/p/gsoc-week-3/</guid>
+        <description>&lt;h1 id=&#34;google-summer-of-code---week-3&#34;&gt;Google Summer of Code - Week 3
+&lt;/h1&gt;&lt;h2 id=&#34;completed-work&#34;&gt;Completed Work
+&lt;/h2&gt;&lt;h3 id=&#34;partial_sort&#34;&gt;&lt;code&gt;partial_sort&lt;/code&gt;
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;The algorithm has been modified to accomodate the S/R model.&lt;/li&gt;
+&lt;li&gt;Tests passed on my local end but failed on Github CI.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;key-learnings&#34;&gt;Key Learnings
+&lt;/h2&gt;&lt;h3 id=&#34;the-structure-of-hpx-partitioner&#34;&gt;The structure of hpx partitioner
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;partition&lt;/code&gt;: basic partitioning function with three strategies: variable block size, static block size, and adaptive strategy&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;partition_with_index&lt;/code&gt;: supporting strided partitioning, applicable to algorithms requiring index information&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;partition_with_data&lt;/code&gt;: associating pre-defined data with specific block sizes, supporting more fine-grained load control&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;static_partitioner&lt;/code&gt;: for synchronous execution strategies&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;task_static_partitioner&lt;/code&gt;: for asynchronous execution strategies: all operations returns a future object, supports un-blocked combination of task chain, more applicble to complex asynchronous workflow&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;how-does-partitioner-accomodate-the-sr-model&#34;&gt;How does partitioner accomodate the S/R model
+&lt;/h3&gt;&lt;p&gt;ExPolicy → Executor types → bulk_async_execute return types → reduce branch choosing&lt;/p&gt;
+&lt;h2 id=&#34;next-week-goals&#34;&gt;Next Week Goals
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Improving &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; to accomodate the S/R execution model&lt;/li&gt;
+&lt;li&gt;Writing tests for algorithms depending on &lt;code&gt;partitioner_with_cleanup&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Improving related algorithms to accomodate the S/R model&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>GSoC Week 2</title>
         <link>https://sususu5.github.io/p/gsoc-week-2/</link>
         <pubDate>Thu, 19 Jun 2025 22:03:52 +1000</pubDate>

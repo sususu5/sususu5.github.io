@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='https://sususu5.github.io/p/gsoc-week-1/'>
 
-<link rel="stylesheet" href="/scss/style.min.57606d9267b8b56def88781619f8802405e45d7fce6f354303c1eb07ba472263.css"><meta property='og:title' content="GSoC Week 1">
+<link rel="stylesheet" href="/scss/style.min.01feed6d848e3950b9febe84494af2028b9cc1c147cd1d4a39ba458c53c18aeb.css"><meta property='og:title' content="GSoC Week 1">
 <meta property='og:description' content="Google Summer of Code Week 1 Completed work The modifications proposed in the proposal have been applied to the parallel version of nth_element, but the unit test still didn&rsquo;t pass. According to the error messages, the reason behind the failure is that the type returned by the partition function is a sender, which is not a future expected by the partition_iter. A specific implementation is planned to be added for the parallel version of the nth_element to accommodate the Senders/Receivers mode. Learnings Got a deeper understanding of the algorithms structure by reading the codebase. (tag_parallel_algorithm wrapper -&gt; algorithm wrapper -&gt; sequential / parallel implementation) Definitions of some basic modes of parallel algorithms. (reduce, scan, copy, map) The parallel version of the nth_element algorithm uses partition rather than using a partitioner, which means certain proposed amendments from last year&rsquo;s report might not be relevant anymore. Plan for Next Week Complete the fix of the nth_element, and the pull request should be merged. Start the fix for the next algorithm, the proposed one is partial_sort, which may be further discussed. ">
 <meta property='og:url' content='https://sususu5.github.io/p/gsoc-week-1/'>
 <meta property='og:site_name' content='David Hua'>
