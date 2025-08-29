@@ -7,7 +7,53 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>David Hua</copyright>
-        <lastBuildDate>Wed, 11 Jun 2025 13:51:00 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 29 Aug 2025 18:23:46 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Google Summer of Code Final Report</title>
+        <link>https://sususu5.github.io/p/google-summer-of-code-final-report/</link>
+        <pubDate>Fri, 29 Aug 2025 18:23:46 +1000</pubDate>
+        
+        <guid>https://sususu5.github.io/p/google-summer-of-code-final-report/</guid>
+        <description>&lt;h1 id=&#34;google-summer-of-code-final-report&#34;&gt;Google Summer of Code Final Report
+&lt;/h1&gt;&lt;h2 id=&#34;adapting-hpxs-parallel-algorithms-for-usage-with-senders-and-receivers&#34;&gt;Adapting HPX&amp;rsquo;s Parallel Algorithms for Usage with Senders and Receivers
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://sususu5.github.io/p/google-summer-of-code-final-report/image.png&#34;
+	width=&#34;1280&#34;
+	height=&#34;640&#34;
+	srcset=&#34;https://sususu5.github.io/p/google-summer-of-code-final-report/image_hu_fc3e2176e42c3946.png 480w, https://sususu5.github.io/p/google-summer-of-code-final-report/image_hu_fc0288407c370265.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;HPX logo&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;200&#34;
+		data-flex-basis=&#34;480px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#what-are-parallel-algorithms-in-hpx&#34; &gt;What are parallel algorithms in HPX&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#what-are-senders-and-receivers&#34; &gt;What are Senders and Receivers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#what-is-this-project-about&#34; &gt;What is this project about&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#difficulties-and-challenges&#34; &gt;Difficulties and challenges&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#completed-works&#34; &gt;Completed works&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#future-works&#34; &gt;Future works&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;p&gt;HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. However, parallel algorithms based on the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component currently don&amp;rsquo;t have support for the Senders/Receivers programming model, which will be standardized as part of the C++26 execution library.&lt;/p&gt;
+&lt;h2 id=&#34;what-are-parallel-algorithms-in-hpx&#34;&gt;What are parallel algorithms in HPX
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;[Content to be added]&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&#34;what-are-senders-and-receivers&#34;&gt;What are Senders and Receivers
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;[Content to be added]&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&#34;what-is-this-project-about&#34;&gt;What is this project about
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;[Content to be added]&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&#34;difficulties-and-challenges&#34;&gt;Difficulties and challenges
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;[Content to be added]&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&#34;completed-works&#34;&gt;Completed works
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;[Content to be added]&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&#34;future-works&#34;&gt;Future works
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;[Content to be added]&lt;/em&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>How to Implement a C&#43;&#43; Vector From Scratch</title>
         <link>https://sususu5.github.io/p/how-to-implement-a-c-vector-from-scratch/</link>
         <pubDate>Wed, 11 Jun 2025 13:51:00 +1000</pubDate>
