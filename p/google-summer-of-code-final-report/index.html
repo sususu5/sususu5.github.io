@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Google Summer of Code Final Report Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers What are parallel algorithms in HPX What are Senders and Receivers What is this project about Difficulties and challenges Completed works Future works HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. However, parallel algorithms based on the partitioner_with_cleanup component currently don&rsquo;t have support for the Senders/Receivers programming model, which will be standardized as part of the C++26 execution library.\n">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers What is partitioner_with_cleanup in HPX What are Senders and Receivers What is this project about Difficulties and challenges Completed works Future works Acknowledgments This report presents the final outcomes of my Google Summer of Code 2025 project with the Ste||ar Group and serves as complete documentation for anyone interested in the implementation details and results.\n">
 <title>Google Summer of Code Final Report</title>
 
 <link rel='canonical' href='https://sususu5.github.io/p/google-summer-of-code-final-report/'>
 
 <link rel="stylesheet" href="/scss/style.min.01feed6d848e3950b9febe84494af2028b9cc1c147cd1d4a39ba458c53c18aeb.css"><meta property='og:title' content="Google Summer of Code Final Report">
-<meta property='og:description' content="Google Summer of Code Final Report Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers What are parallel algorithms in HPX What are Senders and Receivers What is this project about Difficulties and challenges Completed works Future works HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. However, parallel algorithms based on the partitioner_with_cleanup component currently don&rsquo;t have support for the Senders/Receivers programming model, which will be standardized as part of the C++26 execution library.\n">
+<meta property='og:description' content="Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers What is partitioner_with_cleanup in HPX What are Senders and Receivers What is this project about Difficulties and challenges Completed works Future works Acknowledgments This report presents the final outcomes of my Google Summer of Code 2025 project with the Ste||ar Group and serves as complete documentation for anyone interested in the implementation details and results.\n">
 <meta property='og:url' content='https://sususu5.github.io/p/google-summer-of-code-final-report/'>
 <meta property='og:site_name' content='David Hua'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-08-29T18:23:46&#43;10:00'/><meta property='article:modified_time' content='2025-08-29T18:23:46&#43;10:00'/>
 <meta name="twitter:title" content="Google Summer of Code Final Report">
-<meta name="twitter:description" content="Google Summer of Code Final Report Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers What are parallel algorithms in HPX What are Senders and Receivers What is this project about Difficulties and challenges Completed works Future works HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. However, parallel algorithms based on the partitioner_with_cleanup component currently don&rsquo;t have support for the Senders/Receivers programming model, which will be standardized as part of the C++26 execution library.\n">
+<meta name="twitter:description" content="Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers What is partitioner_with_cleanup in HPX What are Senders and Receivers What is this project about Difficulties and challenges Completed works Future works Acknowledgments This report presents the final outcomes of my Google Summer of Code 2025 project with the Ste||ar Group and serves as complete documentation for anyone interested in the implementation details and results.\n">
     </head>
     <body class="
     article-page
@@ -260,12 +260,13 @@
             <nav id="TableOfContents">
   <ol>
     <li><a href="#adapting-hpxs-parallel-algorithms-for-usage-with-senders-and-receivers">Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers</a></li>
-    <li><a href="#what-are-parallel-algorithms-in-hpx">What are parallel algorithms in HPX</a></li>
+    <li><a href="#what-is-partitioner_with_cleanup-in-hpx">What is <code>partitioner_with_cleanup</code> in HPX</a></li>
     <li><a href="#what-are-senders-and-receivers">What are Senders and Receivers</a></li>
     <li><a href="#what-is-this-project-about">What is this project about</a></li>
     <li><a href="#difficulties-and-challenges">Difficulties and challenges</a></li>
     <li><a href="#completed-works">Completed works</a></li>
-    <li><a href="#future-works">Future works</a></li>
+    <li><a href="#future-work">Future Work</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </nav>
         </div>
@@ -330,7 +331,7 @@
 
 
                 <time class="article-time--reading">
-                    1 minute read
+                    6 minute read
                 </time>
             </div>
         
@@ -345,8 +346,7 @@
     <section class="article-content">
     
     
-    <h1 id="google-summer-of-code-final-report">Google Summer of Code Final Report
-</h1><h2 id="adapting-hpxs-parallel-algorithms-for-usage-with-senders-and-receivers">Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers
+    <h2 id="adapting-hpxs-parallel-algorithms-for-usage-with-senders-and-receivers">Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers
 </h2><p><img src="/p/google-summer-of-code-final-report/image.png"
 	width="1280"
 	height="640"
@@ -362,27 +362,141 @@
 	
 ></p>
 <ol>
-<li><a class="link" href="#what-are-parallel-algorithms-in-hpx" >What are parallel algorithms in HPX</a></li>
+<li><a class="link" href="#what-is-partitioner_with_cleanup-in-hpx" >What is <code>partitioner_with_cleanup</code> in HPX</a></li>
 <li><a class="link" href="#what-are-senders-and-receivers" >What are Senders and Receivers</a></li>
 <li><a class="link" href="#what-is-this-project-about" >What is this project about</a></li>
 <li><a class="link" href="#difficulties-and-challenges" >Difficulties and challenges</a></li>
 <li><a class="link" href="#completed-works" >Completed works</a></li>
 <li><a class="link" href="#future-works" >Future works</a></li>
+<li><a class="link" href="#acknowledgments" >Acknowledgments</a></li>
 </ol>
 <hr>
-<p>HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. However, parallel algorithms based on the <code>partitioner_with_cleanup</code> component currently don&rsquo;t have support for the Senders/Receivers programming model, which will be standardized as part of the C++26 execution library.</p>
-<h2 id="what-are-parallel-algorithms-in-hpx">What are parallel algorithms in HPX
-</h2><p><em>[Content to be added]</em></p>
+<p>This report presents the final outcomes of my <a class="link" href="https://summerofcode.withgoogle.com/"  target="_blank" rel="noopener"
+    >Google Summer of Code 2025</a> project with the <a class="link" href="https://stellar-group.org/"  target="_blank" rel="noopener"
+    >Ste||ar Group</a> and serves as complete documentation for anyone interested in the implementation details and results.</p>
+<p>HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. With the upcoming C++26 standard introducing the Senders/Receivers programming model for asynchronous execution, it becomes crucial to ensure HPX&rsquo;s compatibility with it.</p>
+<p>However, parallel algorithms based on the <code>partitioner_with_cleanup</code> component currently don&rsquo;t have support for the Senders/Receivers model, this project aims to bridge the gap by adding related modification to this component, adjusting these algorithms themselves and providing relevant unit tests.</p>
+<h2 id="what-is-partitioner_with_cleanup-in-hpx">What is <code>partitioner_with_cleanup</code> in HPX
+</h2><p>The <code>hpx::parallel::util::partitioner_with_cleanup</code> component in HPX library serves as the central execution engine for HPX&rsquo;s parallel algorithms, the functionality of it is mostly the same as <code>hpx::parallel::util::partitioner</code>, but introduces extra <strong>cleanup</strong> semantic. This critical infrastructure component handles the complex task of dividing work into parallel chunks, managing their execution across different policies, and ensuring robust error handling and resource cleanup.</p>
+<p>To be specific, the running process of <code>partitioner_with_cleaanup</code> can be divided into the following steps:</p>
+<ol>
+<li>Bind policy/executor parameters.</li>
+<li>Build partition shape and bulk-launch chunk work (f1) on executor.</li>
+<li>Reduce results (f2) while applying error handling.</li>
+<li>On any failure, run cleanup on successful chunks to roll back.</li>
+<li>Return result type dictated by policy</li>
+</ol>
+<p>Within the <code>partitioner_with_cleanup</code> component, HPX provides two distinct implementations to handle different execution models. The <code>static_partitioner_with_cleanup</code> is used for non-task execution policies, including sequenced/parallel policies and Sender/Receiver executors. In contrast, the <code>task_static_partitioner_with_cleanup</code> is used for task-based execution policies such as sequenced_task and parallel_task.</p>
+<p>In the call chain, there are two main functions, which are <code>call</code> function and <code>reduce</code> function, they are responsible for the partitioning and reducing process respectively.<br>
+The <code>call</code> function takes the following parameters: an execution policy <code>policy</code>, a range (a forward iterator <code>first</code> and a <code>std::size_t</code> value <code>count</code>), a per-chunk worker <code>f1</code>, a final reducer <code>f2</code>, and a cleanup function <code>cleanup</code>. This function firstly partitions the range into chunks according to the execution policy, calling f1 on all chunks, then call the <code>reduce</code> function to merge the algorithm results.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">template &lt;typename ExPolicy_, typename FwdIter, typename F1,
+</span></span><span class="line"><span class="cl">    typename F2, typename Cleanup&gt;
+</span></span><span class="line"><span class="cl">static decltype(auto) call(ExPolicy_&amp;&amp; policy, FwdIter first,
+</span></span><span class="line"><span class="cl">    std::size_t count, F1&amp;&amp; f1, F2&amp;&amp; f2, Cleanup&amp;&amp; cleanup)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The <code>reduce</code> function takes three parameters: a list of chunk results <code>workitems</code>, a reducing function <code>f</code>, and a cleanup function <code>cleanup</code>, This function firstly waits for all workitems to complete. If there is any exception returned by workitems, the <code>cleanup</code> function will be called on all the successful results and the same exceptions are thrown again. If all the workitems are successful, a result of calling the reduce function will be returned.</p>
+<p>If you are interested in more details about HPX&rsquo;s parallel algorithms, a good reference is <a class="link" href="https://gsoc.wukovitsch.com/final-report-hpx-2024/"  target="_blank" rel="noopener"
+    >Tobias Wukovitsch&rsquo;s project</a> of Google Summer of Code 2024, which includes a clear and detailed introduction.</p>
 <h2 id="what-are-senders-and-receivers">What are Senders and Receivers
-</h2><p><em>[Content to be added]</em></p>
+</h2><p><em>[Content to be added]</em><br>
+Introduce three return value states</p>
 <h2 id="what-is-this-project-about">What is this project about
-</h2><p><em>[Content to be added]</em></p>
+</h2><p>The primary goal of this project is to add support of Senders/Receivers for algorithms based on <code>partitioner_with_cleanup</code>, which can be divided into three parts:</p>
+<ol>
+<li>Adding adaptation to <code>partitioner_with_cleanup</code> component</li>
+<li>Adding adjustment to algorithm implementation</li>
+<li>Providing unit tests for related parallel algorithms</li>
+</ol>
 <h2 id="difficulties-and-challenges">Difficulties and challenges
-</h2><p><em>[Content to be added]</em></p>
+</h2><p>The key challenge of this project is how to modify the <code>partitioner_with_cleanup</code> component so that it can handle failures gracefully. While the regular <code>partitioner</code> component can assume everything will work perfectly and simply return the reduced results, <code>partitioner_with_cleanup</code> must be more cautious. It needs to track which subtasks succeed or fail, and more importantly, it must call <code>cleanup</code> functions for successful work when other parts of the operation fail.</p>
+<p>As mentioned above, an asynchronous operation executed in the Senders/Receivers model can finish in three distinct ways, which are Value, Error, and Stopped. Therefore, if any chunk fails, the partitioning function <code>call</code> completes on the error channel. Consequently, the reduce function can only observe an error signal rather than all the chunk results from the algorithm, making it impossible to identify which chunks completed successfully and preventing proper <code>cleanup</code> function from being called.</p>
+<p>Therefore, we need to distinguish between normal results and errors during execution. To achieve this, the <code>call</code> function wraps the original algorithm parameter <code>f1</code> in a lambda expression, ensuring that every return value is stored in a variant type. Each partition task therefore produces either a normal <code>Result</code> or an <code>exception_ptr</code>.</p>
+<p>Next, the <code>reduce</code> function linearly traverses all partition results. If it detects an error, it first releases the resources held by already successful subtasks, and then rethrows the exception.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">//</span> <span class="n">Here</span> <span class="n">is</span> <span class="n">a</span> <span class="n">simplified</span> <span class="n">version</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">idea</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="mf">1.</span> <span class="n">Wrap</span> <span class="n">f1</span> <span class="n">so</span> <span class="n">each</span> <span class="n">chunk</span> <span class="n">returns</span> <span class="n">either</span> <span class="n">Result</span> <span class="ow">or</span> <span class="n">exception_ptr</span>
+</span></span><span class="line"><span class="cl"><span class="n">auto</span> <span class="n">wrapped_f1</span> <span class="o">=</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">auto</span><span class="o">&amp;&amp;...</span> <span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="p">::</span><span class="n">variant</span><span class="o">&lt;</span><span class="n">Result</span><span class="p">,</span> <span class="n">std</span><span class="p">::</span><span class="n">exception_ptr</span><span class="o">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">f1</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">decltype</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">...</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">std</span><span class="p">::</span><span class="n">current_exception</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="mf">2.</span> <span class="n">Partition</span> <span class="n">returns</span> <span class="n">a</span> <span class="n">collection</span> <span class="n">of</span> <span class="n">variant</span> <span class="n">results</span>
+</span></span><span class="line"><span class="cl"><span class="n">auto</span> <span class="n">items</span> <span class="o">=</span> <span class="n">partition</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">variant</span><span class="o">&lt;</span><span class="n">Result</span><span class="p">,</span> <span class="n">std</span><span class="p">::</span><span class="n">exception_ptr</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                 <span class="n">policy</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">wrapped_f1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="mf">3.</span> <span class="n">Reduce</span> <span class="n">traverses</span> <span class="n">all</span> <span class="n">items</span><span class="p">,</span> <span class="n">cleans</span> <span class="n">up</span> <span class="n">successes</span><span class="p">,</span> <span class="n">rethrows</span> <span class="n">on</span> <span class="n">error</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">auto</span><span class="o">&amp;</span> <span class="n">item</span> <span class="p">:</span> <span class="n">items</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">holds_alternative</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">exception_ptr</span><span class="o">&gt;</span><span class="p">(</span><span class="n">item</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cleanup_successful</span><span class="p">(</span><span class="n">items</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="p">::</span><span class="n">rethrow_exception</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">exception_ptr</span><span class="o">&gt;</span><span class="p">(</span><span class="n">item</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In this way, although each subtask passes its result by value, the final Sender always completes in a successful state by returning a container of variants. The caller can then inspect this container to uniformly detect errors, perform cleanup, and rethrow exceptions if necessary.</p>
 <h2 id="completed-works">Completed works
-</h2><p><em>[Content to be added]</em></p>
-<h2 id="future-works">Future works
-</h2><p><em>[Content to be added]</em></p>
+</h2><p>This project successfully integrated Senders/Receivers model support into all parallel algorithms that utilize the <code>partitioner_with_cleanup</code> component, accompanied by comprehensive unit test coverage.</p>
+<p><strong>Memory Construction Algorithms:</strong></p>
+<ul>
+<li><code>uninitialized_copy</code>, <code>uninitialized_copy_n</code></li>
+<li><code>uninitialized_default_construct</code>, <code>uninitialized_default_construct_n</code></li>
+<li><code>uninitialized_fill</code>, <code>uninitialized_fill_n</code></li>
+<li><code>uninitialized_value_construct</code>, <code>uninitialized_value_construct_n</code></li>
+</ul>
+<p><strong>Memory Movement Algorithms:</strong></p>
+<ul>
+<li><code>uninitialized_move</code>, <code>uninitialized_move_n</code></li>
+<li><code>uninitialized_relocate</code>, <code>uninitialized_relocate_backward</code>, <code>uninitialized_relocate_n</code></li>
+</ul>
+<p>All implementation details, code modifications, and test cases can be reviewed in <a class="link" href="https://github.com/STEllAR-GROUP/hpx/pull/6741"  target="_blank" rel="noopener"
+    >PR #6741</a>, which contains the complete set of changes of project.</p>
+<h2 id="future-work">Future Work
+</h2><p>While this project has successfully extended Senders/Receivers model support to more of HPX&rsquo;s parallel algorithms, several algorithms remain unadapted. Remaining work items are tracked in <a class="link" href="https://docs.google.com/spreadsheets/d/1zbz88UZn912nLiBMbRaMTQTU2lT0vZRigui4jrcbIRA/edit?gid=0#gid=0"  target="_blank" rel="noopener"
+    >this table</a>.</p>
+<p>In the future, developmnt priority should include adapting all parallel algorithms to the Senders/Receivers model, optimizing the performance of these algorithms by fine-tuning the implementation and enhancing test cases.</p>
+<h2 id="acknowledgments">Acknowledgments
+</h2><p>I would like to express my sincere gratitude to <a class="link" href="https://github.com/hkaiser"  target="_blank" rel="noopener"
+    >Hartmut Kaiser</a>, <a class="link" href="https://github.com/isidorostsa"  target="_blank" rel="noopener"
+    >Isidoros Tsaousis-Seiras</a> and <a class="link" href="https://github.com/Pansysk75"  target="_blank" rel="noopener"
+    >Panos Syskakis</a> for their invaluable guidance and continuous support throughout this project. Their expertise was instrumental in helping me navigate complex technical challenges.</p>
+<p>I&rsquo;m also grateful to Tobias Wukovitsch for his excellent work and report in Google Summer of Code 2024, which provided essential background for this work.</p>
+<p>Finally, I thank Google and the Google Summer of Code program for providing this incredible opportunity to contribute to open-source software and grow as a developer.</p>
 
 </section>
 
