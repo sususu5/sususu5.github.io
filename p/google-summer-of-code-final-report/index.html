@@ -331,7 +331,7 @@
 
 
                 <time class="article-time--reading">
-                    6 minute read
+                    8 minute read
                 </time>
             </div>
         
@@ -375,7 +375,7 @@
     >Google Summer of Code 2025</a> project with the <a class="link" href="https://stellar-group.org/"  target="_blank" rel="noopener"
     >Ste||ar Group</a> and serves as complete documentation for anyone interested in the implementation details and results.</p>
 <p>HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. With the upcoming C++26 standard introducing the Senders/Receivers programming model for asynchronous execution, it becomes crucial to ensure HPX&rsquo;s compatibility with it.</p>
-<p>However, parallel algorithms based on the <code>partitioner_with_cleanup</code> component currently don&rsquo;t have support for the Senders/Receivers model, this project aims to bridge the gap by adding related modification to this component, adjusting these algorithms themselves and providing relevant unit tests.</p>
+<p>However, parallel algorithms based on the <code>partitioner_with_cleanup</code> component currently don&rsquo;t have support for the Senders/Receivers model, this project aims to bridge the gap by adding related modification to this component, adjusting these algorithms themselves and providing complete unit tests.</p>
 <h2 id="what-is-partitioner_with_cleanup-in-hpx">What is <code>partitioner_with_cleanup</code> in HPX
 </h2><p>The <code>hpx::parallel::util::partitioner_with_cleanup</code> component in HPX library serves as the central execution engine for HPX&rsquo;s parallel algorithms, the functionality of it is mostly the same as <code>hpx::parallel::util::partitioner</code>, but introduces extra <strong>cleanup</strong> semantic. This critical infrastructure component handles the complex task of dividing work into parallel chunks, managing their execution across different policies, and ensuring robust error handling and resource cleanup.</p>
 <p>To be specific, the running process of <code>partitioner_with_cleaanup</code> can be divided into the following steps:</p>
@@ -407,14 +407,65 @@ The <code>call</code> function takes the following parameters: an execution poli
 <p>If you are interested in more details about HPX&rsquo;s parallel algorithms, a good reference is <a class="link" href="https://gsoc.wukovitsch.com/final-report-hpx-2024/"  target="_blank" rel="noopener"
     >Tobias Wukovitsch&rsquo;s project</a> of Google Summer of Code 2024, which includes a clear and detailed introduction.</p>
 <h2 id="what-are-senders-and-receivers">What are Senders and Receivers
-</h2><p><em>[Content to be added]</em><br>
-Introduce three return value states</p>
-<h2 id="what-is-this-project-about">What is this project about
-</h2><p>The primary goal of this project is to add support of Senders/Receivers for algorithms based on <code>partitioner_with_cleanup</code>, which can be divided into three parts:</p>
+</h2><p>Since this project is about Senders/Receivers, it&rsquo;s important to provide a brief introduction to it.</p>
+<p>Modern C++ has long lacked a standard way to express asynchronous operations. Existing approaches such as futures, callbacks, or third-party libraries often suffer from inconsistent semantics or limited support for cancellation and error handling, which may cause potetial issues.</p>
+<p>Hence, the C++ standards committee has been working on a proposal known as P2300: std::execution, which introduces a new abstraction for asynchronous programming called the Senders/Receivers model. This proposal is expected to form the foundation of future concurrency support in the C++ standard.</p>
+<p>At its core, the Senders/Receivers model separates two roles: the Sender, which produces an asynchronous result, and the Receiver, which consumes it. A sender does not run work immediately but describes what will be done once execution starts.</p>
+<p>To execute a sender, it should be firstly connected to a receiver through <code>connect()</code>, which forms an operation state, and this object knows what to do and where the result should be given to. Then, <code>start()</code> must be called on this oepration state to trigger the real asynchronous execution.</p>
+<p>When the work completes, the sender signals the receiver in one of three ways:</p>
+<ul>
+<li>Value → the operation completed successfully and produced a result</li>
+<li>Error → the operation failed and communicates the failure downstream</li>
+<li>Stopped → the operation was cancelled before producing a result</li>
+</ul>
+<p>This tri-state completion model makes error handling and cancellation first-class citizens rather than afterthoughts. It also allows asynchronous operations to be composed in a consistent and declarative style.</p>
+<p>In the exact codebase, developers often uses functions like <code>sync_wait()</code>, <code>when_all()</code>, and <code>let_value()</code> to implicitly complete the <code>connect()</code> and <code>start()</code> operations. Here is a simple example:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdexec/execution.hpp&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Create a thread pool and get its scheduler
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">stdexec</span><span class="o">::</span><span class="n">static_thread_pool</span> <span class="n">pool</span><span class="p">{</span><span class="mi">2</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">scheduler</span> <span class="o">=</span> <span class="n">pool</span><span class="p">.</span><span class="n">get_scheduler</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">s</span> <span class="o">=</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">just</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>                           <span class="c1">// just() describes &#34;generate 42&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="o">|</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">continue_on</span><span class="p">(</span><span class="n">scheduler</span><span class="p">)</span>             <span class="c1">// continue_on() switches execution to the pool&#39;s scheduler
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="o">|</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">then</span><span class="p">([](</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span> <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="p">});</span>  <span class="c1">// then() describes &#34;times x by 2&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// sync_wait() explicitly connects a receiver and starts it
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">auto</span> <span class="p">[</span><span class="n">result</span><span class="p">]</span> <span class="o">=</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">sync_wait</span><span class="p">(</span><span class="n">s</span><span class="p">).</span><span class="n">value</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Result = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>          <span class="c1">// prints: 84
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="what-is-this-project-about">What is this project about
+</h2><p>The aim of this project is to add support of Senders/Receivers for algorithms based on <code>partitioner_with_cleanup</code>, which can be divided into three parts:</p>
 <ol>
-<li>Adding adaptation to <code>partitioner_with_cleanup</code> component</li>
-<li>Adding adjustment to algorithm implementation</li>
-<li>Providing unit tests for related parallel algorithms</li>
+<li>Adding adaptation to <code>partitioner_with_cleanup</code> component, which includes adding specific logic branch to handle call from Senders/Receivers with launch policy and execution policy, details are introduced in the following part.</li>
+<li>Adding adjustment to algorithm implementation, which includes changing the return value type from <code>algorithm_result</code> to <code>decltype(auto)</code> and forbidding early exit in the Senders/Receivers branch so that the type of the returned senders is correctly deduced.</li>
+<li>Providing unit tests for related parallel algorithms. For each test case, four combination of launch policies and execution policies will be used, which are <code>hpx::launch::sync</code> and <code>seq(task)</code>, <code>hpx::launch::sync</code> and <code>unseq(task)</code>, <code>hpx::launch::async</code> and <code>seq(task)</code>, <code>hpx::launch::async</code> and <code>unseq(task)</code>, which tests comprehensive using cases and ensures alignment with unit testS of other parallel algorithms in the HPX library.</li>
 </ol>
 <h2 id="difficulties-and-challenges">Difficulties and challenges
 </h2><p>The key challenge of this project is how to modify the <code>partitioner_with_cleanup</code> component so that it can handle failures gracefully. While the regular <code>partitioner</code> component can assume everything will work perfectly and simply return the reduced results, <code>partitioner_with_cleanup</code> must be more cautious. It needs to track which subtasks succeed or fail, and more importantly, it must call <code>cleanup</code> functions for successful work when other parts of the operation fail.</p>

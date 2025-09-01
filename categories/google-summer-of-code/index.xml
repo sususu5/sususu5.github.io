@@ -42,7 +42,7 @@
     &gt;Google Summer of Code 2025&lt;/a&gt; project with the &lt;a class=&#34;link&#34; href=&#34;https://stellar-group.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Ste||ar Group&lt;/a&gt; and serves as complete documentation for anyone interested in the implementation details and results.&lt;/p&gt;
 &lt;p&gt;HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. With the upcoming C++26 standard introducing the Senders/Receivers programming model for asynchronous execution, it becomes crucial to ensure HPX&amp;rsquo;s compatibility with it.&lt;/p&gt;
-&lt;p&gt;However, parallel algorithms based on the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component currently don&amp;rsquo;t have support for the Senders/Receivers model, this project aims to bridge the gap by adding related modification to this component, adjusting these algorithms themselves and providing relevant unit tests.&lt;/p&gt;
+&lt;p&gt;However, parallel algorithms based on the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component currently don&amp;rsquo;t have support for the Senders/Receivers model, this project aims to bridge the gap by adding related modification to this component, adjusting these algorithms themselves and providing complete unit tests.&lt;/p&gt;
 &lt;h2 id=&#34;what-is-partitioner_with_cleanup-in-hpx&#34;&gt;What is &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; in HPX
 &lt;/h2&gt;&lt;p&gt;The &lt;code&gt;hpx::parallel::util::partitioner_with_cleanup&lt;/code&gt; component in HPX library serves as the central execution engine for HPX&amp;rsquo;s parallel algorithms, the functionality of it is mostly the same as &lt;code&gt;hpx::parallel::util::partitioner&lt;/code&gt;, but introduces extra &lt;strong&gt;cleanup&lt;/strong&gt; semantic. This critical infrastructure component handles the complex task of dividing work into parallel chunks, managing their execution across different policies, and ensuring robust error handling and resource cleanup.&lt;/p&gt;
 &lt;p&gt;To be specific, the running process of &lt;code&gt;partitioner_with_cleaanup&lt;/code&gt; can be divided into the following steps:&lt;/p&gt;
@@ -74,14 +74,65 @@ The &lt;code&gt;call&lt;/code&gt; function takes the following parameters: an ex
 &lt;p&gt;If you are interested in more details about HPX&amp;rsquo;s parallel algorithms, a good reference is &lt;a class=&#34;link&#34; href=&#34;https://gsoc.wukovitsch.com/final-report-hpx-2024/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Tobias Wukovitsch&amp;rsquo;s project&lt;/a&gt; of Google Summer of Code 2024, which includes a clear and detailed introduction.&lt;/p&gt;
 &lt;h2 id=&#34;what-are-senders-and-receivers&#34;&gt;What are Senders and Receivers
-&lt;/h2&gt;&lt;p&gt;&lt;em&gt;[Content to be added]&lt;/em&gt;&lt;br&gt;
-Introduce three return value states&lt;/p&gt;
-&lt;h2 id=&#34;what-is-this-project-about&#34;&gt;What is this project about
-&lt;/h2&gt;&lt;p&gt;The primary goal of this project is to add support of Senders/Receivers for algorithms based on &lt;code&gt;partitioner_with_cleanup&lt;/code&gt;, which can be divided into three parts:&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Since this project is about Senders/Receivers, it&amp;rsquo;s important to provide a brief introduction to it.&lt;/p&gt;
+&lt;p&gt;Modern C++ has long lacked a standard way to express asynchronous operations. Existing approaches such as futures, callbacks, or third-party libraries often suffer from inconsistent semantics or limited support for cancellation and error handling, which may cause potetial issues.&lt;/p&gt;
+&lt;p&gt;Hence, the C++ standards committee has been working on a proposal known as P2300: std::execution, which introduces a new abstraction for asynchronous programming called the Senders/Receivers model. This proposal is expected to form the foundation of future concurrency support in the C++ standard.&lt;/p&gt;
+&lt;p&gt;At its core, the Senders/Receivers model separates two roles: the Sender, which produces an asynchronous result, and the Receiver, which consumes it. A sender does not run work immediately but describes what will be done once execution starts.&lt;/p&gt;
+&lt;p&gt;To execute a sender, it should be firstly connected to a receiver through &lt;code&gt;connect()&lt;/code&gt;, which forms an operation state, and this object knows what to do and where the result should be given to. Then, &lt;code&gt;start()&lt;/code&gt; must be called on this oepration state to trigger the real asynchronous execution.&lt;/p&gt;
+&lt;p&gt;When the work completes, the sender signals the receiver in one of three ways:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Value → the operation completed successfully and produced a result&lt;/li&gt;
+&lt;li&gt;Error → the operation failed and communicates the failure downstream&lt;/li&gt;
+&lt;li&gt;Stopped → the operation was cancelled before producing a result&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This tri-state completion model makes error handling and cancellation first-class citizens rather than afterthoughts. It also allows asynchronous operations to be composed in a consistent and declarative style.&lt;/p&gt;
+&lt;p&gt;In the exact codebase, developers often uses functions like &lt;code&gt;sync_wait()&lt;/code&gt;, &lt;code&gt;when_all()&lt;/code&gt;, and &lt;code&gt;let_value()&lt;/code&gt; to implicitly complete the &lt;code&gt;connect()&lt;/code&gt; and &lt;code&gt;start()&lt;/code&gt; operations. Here is a simple example:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#include&lt;/span&gt; &lt;span class=&#34;cpf&#34;&gt;&amp;lt;stdexec/execution.hpp&amp;gt;&lt;/span&gt;&lt;span class=&#34;cp&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#include&lt;/span&gt; &lt;span class=&#34;cpf&#34;&gt;&amp;lt;iostream&amp;gt;&lt;/span&gt;&lt;span class=&#34;cp&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;// Create a thread pool and get its scheduler
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;stdexec&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;static_thread_pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;auto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;scheduler&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_scheduler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;auto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;stdexec&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;just&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;42&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;                           &lt;span class=&#34;c1&#34;&gt;// just() describes &amp;#34;generate 42&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;           &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;stdexec&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;continue_on&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scheduler&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;// continue_on() switches execution to the pool&amp;#39;s scheduler
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;           &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;stdexec&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;then&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;([](&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// then() describes &amp;#34;times x by 2&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;// sync_wait() explicitly connects a receiver and starts it
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;auto&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;stdexec&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sync_wait&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;std&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cout&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;Result = &amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;result&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;sc&#34;&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;          &lt;span class=&#34;c1&#34;&gt;// prints: 84
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;what-is-this-project-about&#34;&gt;What is this project about
+&lt;/h2&gt;&lt;p&gt;The aim of this project is to add support of Senders/Receivers for algorithms based on &lt;code&gt;partitioner_with_cleanup&lt;/code&gt;, which can be divided into three parts:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;Adding adaptation to &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component&lt;/li&gt;
-&lt;li&gt;Adding adjustment to algorithm implementation&lt;/li&gt;
-&lt;li&gt;Providing unit tests for related parallel algorithms&lt;/li&gt;
+&lt;li&gt;Adding adaptation to &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component, which includes adding specific logic branch to handle call from Senders/Receivers with launch policy and execution policy, details are introduced in the following part.&lt;/li&gt;
+&lt;li&gt;Adding adjustment to algorithm implementation, which includes changing the return value type from &lt;code&gt;algorithm_result&lt;/code&gt; to &lt;code&gt;decltype(auto)&lt;/code&gt; and forbidding early exit in the Senders/Receivers branch so that the type of the returned senders is correctly deduced.&lt;/li&gt;
+&lt;li&gt;Providing unit tests for related parallel algorithms. For each test case, four combination of launch policies and execution policies will be used, which are &lt;code&gt;hpx::launch::sync&lt;/code&gt; and &lt;code&gt;seq(task)&lt;/code&gt;, &lt;code&gt;hpx::launch::sync&lt;/code&gt; and &lt;code&gt;unseq(task)&lt;/code&gt;, &lt;code&gt;hpx::launch::async&lt;/code&gt; and &lt;code&gt;seq(task)&lt;/code&gt;, &lt;code&gt;hpx::launch::async&lt;/code&gt; and &lt;code&gt;unseq(task)&lt;/code&gt;, which tests comprehensive using cases and ensures alignment with unit testS of other parallel algorithms in the HPX library.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&#34;difficulties-and-challenges&#34;&gt;Difficulties and challenges
 &lt;/h2&gt;&lt;p&gt;The key challenge of this project is how to modify the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component so that it can handle failures gracefully. While the regular &lt;code&gt;partitioner&lt;/code&gt; component can assume everything will work perfectly and simply return the reduced results, &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; must be more cautious. It needs to track which subtasks succeed or fail, and more importantly, it must call &lt;code&gt;cleanup&lt;/code&gt; functions for successful work when other parts of the operation fail.&lt;/p&gt;
