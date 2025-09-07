@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='https://sususu5.github.io/p/google-summer-of-code-final-report/'>
 
-<link rel="stylesheet" href="/scss/style.min.01feed6d848e3950b9febe84494af2028b9cc1c147cd1d4a39ba458c53c18aeb.css"><meta property='og:title' content="Google Summer of Code Final Report">
+<link rel="stylesheet" href="/scss/style.min.b2e87fcc2dbfc414e785cc7725dc731e2cf78cc79c742029780c17280a78765b.css"><meta property='og:title' content="Google Summer of Code Final Report">
 <meta property='og:description' content="Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers What is partitioner_with_cleanup in HPX What are Senders and Receivers What is this project about Difficulties and challenges Completed works Future works Acknowledgments This report presents the final outcomes of my Google Summer of Code 2025 project with the Ste||ar Group and serves as complete documentation for anyone interested in the implementation details and results.\n">
 <meta property='og:url' content='https://sususu5.github.io/p/google-summer-of-code-final-report/'>
 <meta property='og:site_name' content='David Hua'>
@@ -331,7 +331,7 @@
 
 
                 <time class="article-time--reading">
-                    8 minute read
+                    9 minute read
                 </time>
             </div>
         
@@ -353,7 +353,7 @@
 	srcset="/p/google-summer-of-code-final-report/image_hu_fc3e2176e42c3946.png 480w, /p/google-summer-of-code-final-report/image_hu_fc0288407c370265.png 1024w"
 	loading="lazy"
 	
-		alt="HPX logo"
+		alt="HPX Logo"
 	
 	
 		class="gallery-image" 
@@ -374,8 +374,8 @@
 <p>This report presents the final outcomes of my <a class="link" href="https://summerofcode.withgoogle.com/"  target="_blank" rel="noopener"
     >Google Summer of Code 2025</a> project with the <a class="link" href="https://stellar-group.org/"  target="_blank" rel="noopener"
     >Ste||ar Group</a> and serves as complete documentation for anyone interested in the implementation details and results.</p>
-<p>HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. With the upcoming C++26 standard introducing the Senders/Receivers programming model for asynchronous execution, it becomes crucial to ensure HPX&rsquo;s compatibility with it.</p>
-<p>However, parallel algorithms based on the <code>partitioner_with_cleanup</code> component currently don&rsquo;t have support for the Senders/Receivers model, this project aims to bridge the gap by adding modification to this component, adjusting these algorithms themselves and providing comprehensive unit tests.</p>
+<p>HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. With the upcoming C++26 standard introducing the Senders/Receivers (S/R) programming model for asynchronous execution, it becomes crucial to ensure HPX&rsquo;s compatibility with it.</p>
+<p>However, parallel algorithms based on the <code>partitioner_with_cleanup</code> component, which is used for task partitioning and resource cleanup, currently don&rsquo;t have support for the S/R model, this project aims to bridge the gap by adding modification to this component, adjusting these algorithms themselves and providing comprehensive unit tests.</p>
 <h2 id="what-is-partitioner_with_cleanup-in-hpx">What is <code>partitioner_with_cleanup</code> in HPX
 </h2><p>The <code>hpx::parallel::util::partitioner_with_cleanup</code> component in HPX library serves as the central execution engine for HPX&rsquo;s parallel algorithms, the functionality of it is mostly the same as <code>hpx::parallel::util::partitioner</code>, but introduces extra <strong>cleanup</strong> semantic. This critical infrastructure component handles the complex task of dividing work into parallel chunks, managing their execution across different policies, and ensuring robust error handling and resource cleanup.</p>
 <p>To be specific, the running process of <code>partitioner_with_cleanup</code> can be divided into the following steps:</p>
@@ -386,7 +386,7 @@
 <li>On any failure, run cleanup on successful chunks to roll back.</li>
 <li>Return result type dictated by policy</li>
 </ol>
-<p>Within the <code>partitioner_with_cleanup</code> component, HPX provides two distinct implementations to handle different execution models. The <code>static_partitioner_with_cleanup</code> is used for non-task execution policies, including sequenced/parallel policies and Sender/Receiver execution. In contrast, the <code>task_static_partitioner_with_cleanup</code> is used for task-based execution policies such as sequenced_task and parallel_task.</p>
+<p>Within the <code>partitioner_with_cleanup</code> component, HPX provides two distinct implementations to handle different execution models. The <code>static_partitioner_with_cleanup</code> is used for non-task execution policies, including sequenced/parallel policies and S/R execution. In contrast, the <code>task_static_partitioner_with_cleanup</code> is used for task-based execution policies such as sequenced_task and parallel_task.</p>
 <p>In the call chain, there are two main functions, which are the <code>call</code> function and <code>reduce</code> function, they are responsible for the partitioning and reducing process respectively.</p>
 <p>The <code>call</code> function takes the following parameters: an execution policy <code>policy</code>, a range (a forward iterator <code>first</code> and a <code>std::size_t</code> value <code>count</code>), a per-chunk worker <code>f1</code>, a final reducer <code>f2</code>, and a cleanup function <code>cleanup</code>. This function firstly partitions the range into chunks according to the execution policy, calling <code>f1</code> on all chunks, then call the <code>reduce</code> function to merge the algorithm results.</p>
 <div class="highlight"><div class="chroma">
@@ -414,13 +414,29 @@
 </span></span><span class="line"><span class="cl">static decltype(auto) reduce(Items&amp;&amp; workitems, F&amp;&amp; f, Cleanup&amp;&amp; cleanup)
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>If you are interested in more details about HPX&rsquo;s parallel algorithms, a good reference is <a class="link" href="https://gsoc.wukovitsch.com/final-report-hpx-2024/"  target="_blank" rel="noopener"
+</div><p>The following is an image that illustrates its workflow.
+<img src="/p/google-summer-of-code-final-report/process.png"
+	width="465"
+	height="665"
+	srcset="/p/google-summer-of-code-final-report/process_hu_6ad44592e903cda3.png 480w, /p/google-summer-of-code-final-report/process_hu_c9a1f84080d06089.png 1024w"
+	loading="lazy"
+	
+		alt="Working Process"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="69"
+		data-flex-basis="167px"
+	
+></p>
+<p>If you are interested in more details about HPX&rsquo;s parallel algorithms, a good reference is <a class="link" href="https://gsoc.wukovitsch.com/final-report-hpx-2024/"  target="_blank" rel="noopener"
     >Tobias Wukovitsch&rsquo;s project</a> of Google Summer of Code 2024, which includes a clear and detailed introduction.</p>
 <h2 id="what-are-senders-and-receivers">What are Senders and Receivers
-</h2><p>Since this project is about Senders/Receivers, it&rsquo;s important to provide a brief introduction to it.</p>
+</h2><p>Since this project is about S/R, it&rsquo;s important to provide a brief introduction to it.</p>
 <p>Modern C++ has long lacked a standard way to express asynchronous operations. Existing approaches such as futures, callbacks, or third-party libraries often suffer from inconsistent semantics or limited support for cancellation and error handling, which may cause potential issues.</p>
-<p>Hence, the C++ standards committee has been working on a proposal known as P2300: std::execution, which introduces a new abstraction for asynchronous programming called the Senders/Receivers model. This proposal is expected to form the foundation of future concurrency support in the C++ standard.</p>
-<p>At its core, the Senders/Receivers model separates two roles: the Sender, which produces an asynchronous result, and the Receiver, which consumes it. A sender does not run work immediately but describes what will be done once execution starts.</p>
+<p>Hence, the C++ standards committee has been working on a proposal known as <a class="link" href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p2300r10.html"  target="_blank" rel="noopener"
+    >P2300: std::execution</a>, which introduces a new abstraction for asynchronous programming called the S/R model. This proposal is expected to form the foundation of future concurrency support in the C++ standard.</p>
+<p>At its core, the S/R model separates two roles: the Sender, which produces an asynchronous result, and the Receiver, which consumes it. A sender does not run work immediately but describes what will be done once execution starts.</p>
 <p>To execute a sender, it should be firstly connected to a receiver through <code>connect()</code>, which forms an operation state, this object knows what to do and where the result should be given to. Then, <code>start()</code> must be called on it to trigger the actual asynchronous execution.</p>
 <p>When the work completes, the sender signals the receiver in one of three ways:</p>
 <ul>
@@ -471,7 +487,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="what-is-this-project-about">What is this project about
-</h2><p>The primary goal of this project is to extend HPX’s parallel algorithms so that they fully support the <strong>Senders/Receivers (S/R)</strong> model when built on top of the <code>partitioner_with_cleanup</code> component. The work is organized into three parts:</p>
+</h2><p>The primary goal of this project is to extend HPX&rsquo;s parallel algorithms so that they fully support the <strong>S/R</strong> model when built on top of the <code>partitioner_with_cleanup</code> component. The work is organized into three parts:</p>
 <ol>
 <li>
 <p><strong>Extending <code>partitioner_with_cleanup</code></strong><br>
@@ -495,7 +511,7 @@ Provide a comprehensive suite of tests for the affected algorithms. Each test ev
 </ol>
 <h2 id="difficulties-and-challenges">Difficulties and challenges
 </h2><p>The key challenge of this project is how to modify the <code>partitioner_with_cleanup</code> component so that it can handle failures gracefully. While the regular <code>partitioner</code> component can assume everything will work perfectly and simply return the reduced results, <code>partitioner_with_cleanup</code> must be more cautious. It needs to track which subtasks succeed or fail, and more importantly, it must call <code>cleanup</code> functions for successful work when other parts of the operation fail.</p>
-<p>As mentioned above, an asynchronous operation executed in the Senders/Receivers model can finish in three distinct ways, which are Value, Error, and Stopped. Therefore, if any chunk fails, the partitioning function <code>call</code> completes on the error channel. Consequently, the reduce function can only observe an error signal rather than all the chunk results from the algorithm, making it impossible to identify which chunks completed successfully and preventing proper <code>cleanup</code> function from being called.</p>
+<p>As mentioned above, an asynchronous operation executed in the S/R model can finish in three distinct ways, which are Value, Error, and Stopped. Therefore, if any chunk fails, the partitioning function <code>call</code> completes on the error channel. Consequently, the reduce function can only observe an error signal rather than all the chunk results from the algorithm, making it impossible to identify which chunks completed successfully and preventing proper <code>cleanup</code> function from being called.</p>
 <p>Therefore, we need to distinguish between normal results and errors during execution. To achieve this, the <code>call</code> function wraps the original algorithm parameter <code>f1</code> in a lambda expression, ensuring that every return value is stored in a variant type. Each partition task therefore produces either a normal <code>Result</code> or an <code>exception_ptr</code>.</p>
 <p>Next, the <code>reduce</code> function linearly traverses all partition results. If it detects an error, it first releases the resources held by already successful subtasks, and then rethrows the exception.</p>
 <p>This pseudocode illustrates the principle, actual implementation differs in template details.</p>
@@ -549,7 +565,7 @@ Provide a comprehensive suite of tests for the affected algorithms. Each test ev
 </div>
 </div><p>In this way, although each subtask passes its result by value, the final Sender always completes in a successful state by returning a container of variants. The caller can then inspect this container to uniformly detect errors, perform cleanup, and rethrow exceptions if necessary.</p>
 <h2 id="completed-works">Completed works
-</h2><p>This project successfully integrated Senders/Receivers model support into all parallel algorithms that utilize the <code>partitioner_with_cleanup</code> component, accompanied by comprehensive unit test coverage.</p>
+</h2><p>This project successfully integrated S/R model support into all parallel algorithms that utilize the <code>partitioner_with_cleanup</code> component, accompanied by comprehensive unit test coverage.</p>
 <p><strong>Memory Construction Algorithms:</strong></p>
 <ul>
 <li><code>uninitialized_copy</code>, <code>uninitialized_copy_n</code></li>
@@ -565,9 +581,10 @@ Provide a comprehensive suite of tests for the affected algorithms. Each test ev
 <p>All implementation details, code modifications, and test cases can be reviewed in <a class="link" href="https://github.com/STEllAR-GROUP/hpx/pull/6741"  target="_blank" rel="noopener"
     >PR #6741</a>, which contains the complete set of changes of project.</p>
 <h2 id="future-work">Future Work
-</h2><p>While this project has successfully extended Senders/Receivers model support to more of HPX&rsquo;s parallel algorithms, several algorithms remain unadapted. Remaining work items are tracked in <a class="link" href="https://docs.google.com/spreadsheets/d/1zbz88UZn912nLiBMbRaMTQTU2lT0vZRigui4jrcbIRA/edit?gid=0#gid=0"  target="_blank" rel="noopener"
+</h2><p>This project implements a solid extension for S/R model integration in HPX, with the following development priorities:</p>
+<p>The immediate focus should be completing algorithm coverage by adapting remaining parallel algorithms to the S/R model. Current progress and remaining work items are tracked in <a class="link" href="https://docs.google.com/spreadsheets/d/1zbz88UZn912nLiBMbRaMTQTU2lT0vZRigui4jrcbIRA/edit?gid=0#gid=0"  target="_blank" rel="noopener"
     >this table</a>.</p>
-<p>In the future, development priority should include adapting all parallel algorithms to the Senders/Receivers model, optimizing the performance of these algorithms by fine-tuning the implementation and enhancing test cases.</p>
+<p>Next, development should shift toward performance optimization through comprehensive benchmarking and advanced S/R composition patterns to minimize overhead and maximize efficiency.</p>
 <h2 id="acknowledgments">Acknowledgments
 </h2><p>I would like to express my sincere gratitude to <a class="link" href="https://github.com/hkaiser"  target="_blank" rel="noopener"
     >Hartmut Kaiser</a>, <a class="link" href="https://github.com/isidorostsa"  target="_blank" rel="noopener"

@@ -20,7 +20,7 @@
 	srcset=&#34;https://sususu5.github.io/p/google-summer-of-code-final-report/image_hu_fc3e2176e42c3946.png 480w, https://sususu5.github.io/p/google-summer-of-code-final-report/image_hu_fc0288407c370265.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;HPX logo&#34;
+		alt=&#34;HPX Logo&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -41,8 +41,8 @@
 &lt;p&gt;This report presents the final outcomes of my &lt;a class=&#34;link&#34; href=&#34;https://summerofcode.withgoogle.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Google Summer of Code 2025&lt;/a&gt; project with the &lt;a class=&#34;link&#34; href=&#34;https://stellar-group.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Ste||ar Group&lt;/a&gt; and serves as complete documentation for anyone interested in the implementation details and results.&lt;/p&gt;
-&lt;p&gt;HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. With the upcoming C++26 standard introducing the Senders/Receivers programming model for asynchronous execution, it becomes crucial to ensure HPX&amp;rsquo;s compatibility with it.&lt;/p&gt;
-&lt;p&gt;However, parallel algorithms based on the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component currently don&amp;rsquo;t have support for the Senders/Receivers model, this project aims to bridge the gap by adding modification to this component, adjusting these algorithms themselves and providing comprehensive unit tests.&lt;/p&gt;
+&lt;p&gt;HPX provides a comprehensive implementation of parallel algorithms that serves as both a standards-compliant C++ library and a high-performance computing runtime system. With the upcoming C++26 standard introducing the Senders/Receivers (S/R) programming model for asynchronous execution, it becomes crucial to ensure HPX&amp;rsquo;s compatibility with it.&lt;/p&gt;
+&lt;p&gt;However, parallel algorithms based on the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component, which is used for task partitioning and resource cleanup, currently don&amp;rsquo;t have support for the S/R model, this project aims to bridge the gap by adding modification to this component, adjusting these algorithms themselves and providing comprehensive unit tests.&lt;/p&gt;
 &lt;h2 id=&#34;what-is-partitioner_with_cleanup-in-hpx&#34;&gt;What is &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; in HPX
 &lt;/h2&gt;&lt;p&gt;The &lt;code&gt;hpx::parallel::util::partitioner_with_cleanup&lt;/code&gt; component in HPX library serves as the central execution engine for HPX&amp;rsquo;s parallel algorithms, the functionality of it is mostly the same as &lt;code&gt;hpx::parallel::util::partitioner&lt;/code&gt;, but introduces extra &lt;strong&gt;cleanup&lt;/strong&gt; semantic. This critical infrastructure component handles the complex task of dividing work into parallel chunks, managing their execution across different policies, and ensuring robust error handling and resource cleanup.&lt;/p&gt;
 &lt;p&gt;To be specific, the running process of &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; can be divided into the following steps:&lt;/p&gt;
@@ -53,7 +53,7 @@
 &lt;li&gt;On any failure, run cleanup on successful chunks to roll back.&lt;/li&gt;
 &lt;li&gt;Return result type dictated by policy&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Within the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component, HPX provides two distinct implementations to handle different execution models. The &lt;code&gt;static_partitioner_with_cleanup&lt;/code&gt; is used for non-task execution policies, including sequenced/parallel policies and Sender/Receiver execution. In contrast, the &lt;code&gt;task_static_partitioner_with_cleanup&lt;/code&gt; is used for task-based execution policies such as sequenced_task and parallel_task.&lt;/p&gt;
+&lt;p&gt;Within the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component, HPX provides two distinct implementations to handle different execution models. The &lt;code&gt;static_partitioner_with_cleanup&lt;/code&gt; is used for non-task execution policies, including sequenced/parallel policies and S/R execution. In contrast, the &lt;code&gt;task_static_partitioner_with_cleanup&lt;/code&gt; is used for task-based execution policies such as sequenced_task and parallel_task.&lt;/p&gt;
 &lt;p&gt;In the call chain, there are two main functions, which are the &lt;code&gt;call&lt;/code&gt; function and &lt;code&gt;reduce&lt;/code&gt; function, they are responsible for the partitioning and reducing process respectively.&lt;/p&gt;
 &lt;p&gt;The &lt;code&gt;call&lt;/code&gt; function takes the following parameters: an execution policy &lt;code&gt;policy&lt;/code&gt;, a range (a forward iterator &lt;code&gt;first&lt;/code&gt; and a &lt;code&gt;std::size_t&lt;/code&gt; value &lt;code&gt;count&lt;/code&gt;), a per-chunk worker &lt;code&gt;f1&lt;/code&gt;, a final reducer &lt;code&gt;f2&lt;/code&gt;, and a cleanup function &lt;code&gt;cleanup&lt;/code&gt;. This function firstly partitions the range into chunks according to the execution policy, calling &lt;code&gt;f1&lt;/code&gt; on all chunks, then call the &lt;code&gt;reduce&lt;/code&gt; function to merge the algorithm results.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -81,13 +81,29 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;static decltype(auto) reduce(Items&amp;amp;&amp;amp; workitems, F&amp;amp;&amp;amp; f, Cleanup&amp;amp;&amp;amp; cleanup)
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;If you are interested in more details about HPX&amp;rsquo;s parallel algorithms, a good reference is &lt;a class=&#34;link&#34; href=&#34;https://gsoc.wukovitsch.com/final-report-hpx-2024/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;/div&gt;&lt;p&gt;The following is an image that illustrates its workflow.
+&lt;img src=&#34;https://sususu5.github.io/p/google-summer-of-code-final-report/process.png&#34;
+	width=&#34;465&#34;
+	height=&#34;665&#34;
+	srcset=&#34;https://sususu5.github.io/p/google-summer-of-code-final-report/process_hu_6ad44592e903cda3.png 480w, https://sususu5.github.io/p/google-summer-of-code-final-report/process_hu_c9a1f84080d06089.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Working Process&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;69&#34;
+		data-flex-basis=&#34;167px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;If you are interested in more details about HPX&amp;rsquo;s parallel algorithms, a good reference is &lt;a class=&#34;link&#34; href=&#34;https://gsoc.wukovitsch.com/final-report-hpx-2024/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Tobias Wukovitsch&amp;rsquo;s project&lt;/a&gt; of Google Summer of Code 2024, which includes a clear and detailed introduction.&lt;/p&gt;
 &lt;h2 id=&#34;what-are-senders-and-receivers&#34;&gt;What are Senders and Receivers
-&lt;/h2&gt;&lt;p&gt;Since this project is about Senders/Receivers, it&amp;rsquo;s important to provide a brief introduction to it.&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Since this project is about S/R, it&amp;rsquo;s important to provide a brief introduction to it.&lt;/p&gt;
 &lt;p&gt;Modern C++ has long lacked a standard way to express asynchronous operations. Existing approaches such as futures, callbacks, or third-party libraries often suffer from inconsistent semantics or limited support for cancellation and error handling, which may cause potential issues.&lt;/p&gt;
-&lt;p&gt;Hence, the C++ standards committee has been working on a proposal known as P2300: std::execution, which introduces a new abstraction for asynchronous programming called the Senders/Receivers model. This proposal is expected to form the foundation of future concurrency support in the C++ standard.&lt;/p&gt;
-&lt;p&gt;At its core, the Senders/Receivers model separates two roles: the Sender, which produces an asynchronous result, and the Receiver, which consumes it. A sender does not run work immediately but describes what will be done once execution starts.&lt;/p&gt;
+&lt;p&gt;Hence, the C++ standards committee has been working on a proposal known as &lt;a class=&#34;link&#34; href=&#34;https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p2300r10.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;P2300: std::execution&lt;/a&gt;, which introduces a new abstraction for asynchronous programming called the S/R model. This proposal is expected to form the foundation of future concurrency support in the C++ standard.&lt;/p&gt;
+&lt;p&gt;At its core, the S/R model separates two roles: the Sender, which produces an asynchronous result, and the Receiver, which consumes it. A sender does not run work immediately but describes what will be done once execution starts.&lt;/p&gt;
 &lt;p&gt;To execute a sender, it should be firstly connected to a receiver through &lt;code&gt;connect()&lt;/code&gt;, which forms an operation state, this object knows what to do and where the result should be given to. Then, &lt;code&gt;start()&lt;/code&gt; must be called on it to trigger the actual asynchronous execution.&lt;/p&gt;
 &lt;p&gt;When the work completes, the sender signals the receiver in one of three ways:&lt;/p&gt;
 &lt;ul&gt;
@@ -138,7 +154,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;what-is-this-project-about&#34;&gt;What is this project about
-&lt;/h2&gt;&lt;p&gt;The primary goal of this project is to extend HPX’s parallel algorithms so that they fully support the &lt;strong&gt;Senders/Receivers (S/R)&lt;/strong&gt; model when built on top of the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component. The work is organized into three parts:&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;The primary goal of this project is to extend HPX&amp;rsquo;s parallel algorithms so that they fully support the &lt;strong&gt;S/R&lt;/strong&gt; model when built on top of the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component. The work is organized into three parts:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;Extending &lt;code&gt;partitioner_with_cleanup&lt;/code&gt;&lt;/strong&gt;&lt;br&gt;
@@ -162,7 +178,7 @@ Provide a comprehensive suite of tests for the affected algorithms. Each test ev
 &lt;/ol&gt;
 &lt;h2 id=&#34;difficulties-and-challenges&#34;&gt;Difficulties and challenges
 &lt;/h2&gt;&lt;p&gt;The key challenge of this project is how to modify the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component so that it can handle failures gracefully. While the regular &lt;code&gt;partitioner&lt;/code&gt; component can assume everything will work perfectly and simply return the reduced results, &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; must be more cautious. It needs to track which subtasks succeed or fail, and more importantly, it must call &lt;code&gt;cleanup&lt;/code&gt; functions for successful work when other parts of the operation fail.&lt;/p&gt;
-&lt;p&gt;As mentioned above, an asynchronous operation executed in the Senders/Receivers model can finish in three distinct ways, which are Value, Error, and Stopped. Therefore, if any chunk fails, the partitioning function &lt;code&gt;call&lt;/code&gt; completes on the error channel. Consequently, the reduce function can only observe an error signal rather than all the chunk results from the algorithm, making it impossible to identify which chunks completed successfully and preventing proper &lt;code&gt;cleanup&lt;/code&gt; function from being called.&lt;/p&gt;
+&lt;p&gt;As mentioned above, an asynchronous operation executed in the S/R model can finish in three distinct ways, which are Value, Error, and Stopped. Therefore, if any chunk fails, the partitioning function &lt;code&gt;call&lt;/code&gt; completes on the error channel. Consequently, the reduce function can only observe an error signal rather than all the chunk results from the algorithm, making it impossible to identify which chunks completed successfully and preventing proper &lt;code&gt;cleanup&lt;/code&gt; function from being called.&lt;/p&gt;
 &lt;p&gt;Therefore, we need to distinguish between normal results and errors during execution. To achieve this, the &lt;code&gt;call&lt;/code&gt; function wraps the original algorithm parameter &lt;code&gt;f1&lt;/code&gt; in a lambda expression, ensuring that every return value is stored in a variant type. Each partition task therefore produces either a normal &lt;code&gt;Result&lt;/code&gt; or an &lt;code&gt;exception_ptr&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Next, the &lt;code&gt;reduce&lt;/code&gt; function linearly traverses all partition results. If it detects an error, it first releases the resources held by already successful subtasks, and then rethrows the exception.&lt;/p&gt;
 &lt;p&gt;This pseudocode illustrates the principle, actual implementation differs in template details.&lt;/p&gt;
@@ -216,7 +232,7 @@ Provide a comprehensive suite of tests for the affected algorithms. Each test ev
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;In this way, although each subtask passes its result by value, the final Sender always completes in a successful state by returning a container of variants. The caller can then inspect this container to uniformly detect errors, perform cleanup, and rethrow exceptions if necessary.&lt;/p&gt;
 &lt;h2 id=&#34;completed-works&#34;&gt;Completed works
-&lt;/h2&gt;&lt;p&gt;This project successfully integrated Senders/Receivers model support into all parallel algorithms that utilize the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component, accompanied by comprehensive unit test coverage.&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;This project successfully integrated S/R model support into all parallel algorithms that utilize the &lt;code&gt;partitioner_with_cleanup&lt;/code&gt; component, accompanied by comprehensive unit test coverage.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Memory Construction Algorithms:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;uninitialized_copy&lt;/code&gt;, &lt;code&gt;uninitialized_copy_n&lt;/code&gt;&lt;/li&gt;
@@ -232,9 +248,10 @@ Provide a comprehensive suite of tests for the affected algorithms. Each test ev
 &lt;p&gt;All implementation details, code modifications, and test cases can be reviewed in &lt;a class=&#34;link&#34; href=&#34;https://github.com/STEllAR-GROUP/hpx/pull/6741&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;PR #6741&lt;/a&gt;, which contains the complete set of changes of project.&lt;/p&gt;
 &lt;h2 id=&#34;future-work&#34;&gt;Future Work
-&lt;/h2&gt;&lt;p&gt;While this project has successfully extended Senders/Receivers model support to more of HPX&amp;rsquo;s parallel algorithms, several algorithms remain unadapted. Remaining work items are tracked in &lt;a class=&#34;link&#34; href=&#34;https://docs.google.com/spreadsheets/d/1zbz88UZn912nLiBMbRaMTQTU2lT0vZRigui4jrcbIRA/edit?gid=0#gid=0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;/h2&gt;&lt;p&gt;This project implements a solid extension for S/R model integration in HPX, with the following development priorities:&lt;/p&gt;
+&lt;p&gt;The immediate focus should be completing algorithm coverage by adapting remaining parallel algorithms to the S/R model. Current progress and remaining work items are tracked in &lt;a class=&#34;link&#34; href=&#34;https://docs.google.com/spreadsheets/d/1zbz88UZn912nLiBMbRaMTQTU2lT0vZRigui4jrcbIRA/edit?gid=0#gid=0&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;this table&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;In the future, development priority should include adapting all parallel algorithms to the Senders/Receivers model, optimizing the performance of these algorithms by fine-tuning the implementation and enhancing test cases.&lt;/p&gt;
+&lt;p&gt;Next, development should shift toward performance optimization through comprehensive benchmarking and advanced S/R composition patterns to minimize overhead and maximize efficiency.&lt;/p&gt;
 &lt;h2 id=&#34;acknowledgments&#34;&gt;Acknowledgments
 &lt;/h2&gt;&lt;p&gt;I would like to express my sincere gratitude to &lt;a class=&#34;link&#34; href=&#34;https://github.com/hkaiser&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Hartmut Kaiser&lt;/a&gt;, &lt;a class=&#34;link&#34; href=&#34;https://github.com/isidorostsa&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
