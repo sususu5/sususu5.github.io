@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Google Summer of Code on David Hua</title>
+        <title>Google Summer of Code on Zhengnan Hua</title>
         <link>https://sususu5.github.io/categories/google-summer-of-code/</link>
-        <description>Recent content in Google Summer of Code on David Hua</description>
+        <description>Recent content in Google Summer of Code on Zhengnan Hua</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <copyright>David Hua</copyright>
+        <copyright>Zhengnan Hua</copyright>
         <lastBuildDate>Fri, 29 Aug 2025 18:23:46 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/categories/google-summer-of-code/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Google Summer of Code Final Report</title>
         <link>https://sususu5.github.io/p/google-summer-of-code-final-report/</link>

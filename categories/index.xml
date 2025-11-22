@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Categories on David Hua</title>
+        <title>Categories on Zhengnan Hua</title>
         <link>https://sususu5.github.io/categories/</link>
-        <description>Recent content in Categories on David Hua</description>
+        <description>Recent content in Categories on Zhengnan Hua</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <copyright>David Hua</copyright>
-        <lastBuildDate>Fri, 29 Aug 2025 18:23:46 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <copyright>Zhengnan Hua</copyright>
+        <lastBuildDate>Sun, 09 Nov 2025 23:50:12 +0800</lastBuildDate><atom:link href="https://sususu5.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>C&#43;&#43;</title>
+        <link>https://sususu5.github.io/categories/c&#43;&#43;/</link>
+        <pubDate>Sun, 09 Nov 2025 23:50:12 +0800</pubDate>
+        
+        <guid>https://sususu5.github.io/categories/c&#43;&#43;/</guid>
+        <description>&lt;img src="https://sususu5.github.io/categories/c&#43;&#43;/cpp.png" alt="Featured image of post C&#43;&#43;" /&gt;</description>
+        </item>
+        <item>
         <title>Google Summer of Code</title>
         <link>https://sususu5.github.io/categories/google-summer-of-code/</link>
         <pubDate>Fri, 29 Aug 2025 18:23:46 +1000</pubDate>
         
         <guid>https://sususu5.github.io/categories/google-summer-of-code/</guid>
         <description>&lt;img src="https://sususu5.github.io/categories/google-summer-of-code/gsoc-cover.png" alt="Featured image of post Google Summer of Code" /&gt;</description>
-        </item>
-        <item>
-        <title>C&#43;&#43;</title>
-        <link>https://sususu5.github.io/categories/c&#43;&#43;/</link>
-        <pubDate>Wed, 11 Jun 2025 13:51:00 +1000</pubDate>
-        
-        <guid>https://sususu5.github.io/categories/c&#43;&#43;/</guid>
-        <description>&lt;img src="https://sususu5.github.io/categories/c&#43;&#43;/cpp.png" alt="Featured image of post C&#43;&#43;" /&gt;</description>
         </item>
         <item>
         <title>System Design</title>

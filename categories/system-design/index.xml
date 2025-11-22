@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>System Design on David Hua</title>
+        <title>System Design on Zhengnan Hua</title>
         <link>https://sususu5.github.io/categories/system-design/</link>
-        <description>Recent content in System Design on David Hua</description>
+        <description>Recent content in System Design on Zhengnan Hua</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <copyright>David Hua</copyright>
+        <copyright>Zhengnan Hua</copyright>
         <lastBuildDate>Sat, 07 Jun 2025 11:43:38 +1000</lastBuildDate><atom:link href="https://sususu5.github.io/categories/system-design/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>How to Design a POI (Point of Interest) Service</title>
         <link>https://sususu5.github.io/p/how-to-design-a-poi-point-of-interest-service/</link>
