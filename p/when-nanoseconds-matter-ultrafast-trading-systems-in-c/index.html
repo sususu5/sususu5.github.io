@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="This is my personal notes of the talk &ldquo;When Nanoseconds Matter: Ultrafast Trading Systems in C++&rdquo; from Cppcon.\nOrder Book Properties Two ordered sequences Bids: from highest to lowest price Asks: from lowest to highest price Price Level Price Size: sum of all orders&rsquo; size at this price level Each order has an ID(uint64_t) which is unqiue throughout the trading session A typical tock order book has ~1000 price level &ldquo;per side&rdquo; 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 std::map&lt;Price, Volume, std::greater&lt;Price&gt;&gt; mBidLevels; std::map&lt;Price, Volume, std::less&lt;Price&gt;&gt; mAskLevels; template &lt;class T&gt; typename T::iterator AddOrder(T&amp; levels, Price price, Volume volume) { auto [it, inserted] = levels.try_emplace(price, volume); if (inserted == false) it-&gt;second += volume; return it; } template &lt;class T&gt; void DeleteOrder(typename T::iterator it, T&amp; levels, Price price, Volume volume) { it-&gt;second -= volume; if (it-&gt;second &lt;= 0) levels.erase(it); } Principle #1: &ldquo;Most of the time, you don&rsquo;t want node containers&rdquo;\n">
 <title>When Nanoseconds Matter: Ultrafast Trading Systems in C&#43;&#43;</title>
 
-<link rel='canonical' href='https://sususu5.github.io/p/when-nanoseconds-matter-ultrafast-trading-systems-in-c-/'>
+<link rel='canonical' href='https://sususu5.github.io/p/when-nanoseconds-matter-ultrafast-trading-systems-in-c/'>
 
 <link rel="stylesheet" href="/scss/style.min.63d7f05a1f7147db682a84c0f9b16331f129dc8c7848a764f7189f277b24bd4d.css"><meta property='og:title' content="When Nanoseconds Matter: Ultrafast Trading Systems in C++">
 <meta property='og:description' content="This is my personal notes of the talk &ldquo;When Nanoseconds Matter: Ultrafast Trading Systems in C++&rdquo; from Cppcon.\nOrder Book Properties Two ordered sequences Bids: from highest to lowest price Asks: from lowest to highest price Price Level Price Size: sum of all orders&rsquo; size at this price level Each order has an ID(uint64_t) which is unqiue throughout the trading session A typical tock order book has ~1000 price level &ldquo;per side&rdquo; 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 std::map&lt;Price, Volume, std::greater&lt;Price&gt;&gt; mBidLevels; std::map&lt;Price, Volume, std::less&lt;Price&gt;&gt; mAskLevels; template &lt;class T&gt; typename T::iterator AddOrder(T&amp; levels, Price price, Volume volume) { auto [it, inserted] = levels.try_emplace(price, volume); if (inserted == false) it-&gt;second += volume; return it; } template &lt;class T&gt; void DeleteOrder(typename T::iterator it, T&amp; levels, Price price, Volume volume) { it-&gt;second -= volume; if (it-&gt;second &lt;= 0) levels.erase(it); } Principle #1: &ldquo;Most of the time, you don&rsquo;t want node containers&rdquo;\n">
-<meta property='og:url' content='https://sususu5.github.io/p/when-nanoseconds-matter-ultrafast-trading-systems-in-c-/'>
+<meta property='og:url' content='https://sususu5.github.io/p/when-nanoseconds-matter-ultrafast-trading-systems-in-c/'>
 <meta property='og:site_name' content='Zhengnan Hua'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-11-09T23:50:12&#43;08:00'/><meta property='article:modified_time' content='2025-11-09T23:50:12&#43;08:00'/>
 <meta name="twitter:title" content="When Nanoseconds Matter: Ultrafast Trading Systems in C++">
@@ -56,7 +56,7 @@
                     
                     
                         
-                        <img src="/img/gumi_hu_bc747df7e1102d9e.jpg" width="300"
+                        <img src="/img/gumi_hu_c60ea5320f40ba1a.jpg" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -310,7 +310,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/when-nanoseconds-matter-ultrafast-trading-systems-in-c-/">When Nanoseconds Matter: Ultrafast Trading Systems in C&#43;&#43;</a>
+            <a href="/p/when-nanoseconds-matter-ultrafast-trading-systems-in-c/">When Nanoseconds Matter: Ultrafast Trading Systems in C&#43;&#43;</a>
         </h2>
     
         
@@ -514,7 +514,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// Reversing the vector to minimize the number of elements being moved
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">auto</span> <span class="nf">GetBestPrices</span><span class="p">()</span> <span class="k">const</span>
+</span></span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="nf">GetBestPrices</span><span class="p">()</span> <span class="k">const</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">{</span><span class="n">mBidLevels</span><span class="p">.</span><span class="n">rbegin</span><span class="p">().</span><span class="n">first</span><span class="p">,</span> <span class="n">mAskLevels</span><span class="p">.</span><span class="n">rbegin</span><span class="p">().</span><span class="n">first</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -559,7 +559,7 @@
 </span></span><span class="line"><span class="cl">        <span class="k">const</span> <span class="k">auto</span> <span class="n">parentPid</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">getppid</span><span class="p">());</span>
 </span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Running perf on parent process &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">parentPid</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="c1">// Changing the current process into perf
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">execlp</span><span class="p">(</span><span class="s">&#34;perf&#34;</span><span class="p">,</span> <span class="s">&#34;perf&#34;</span><span class="p">,</span> <span class="p">...,</span> <span class="n">parentPid</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="k">nullptr</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl">        <span class="n">execlp</span><span class="p">(</span><span class="s">&#34;perf&#34;</span><span class="p">,</span> <span class="s">&#34;perf&#34;</span><span class="p">,</span> <span class="p">...,</span> <span class="n">parentPid</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="k">nullptr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&#34;execlp failed&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -567,7 +567,7 @@
 </span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">InitAndRunBenchmark</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">InitBenchmark</span><span class="p">();</span>  <span class="c1">// might take a long time!
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">RunPerf</span><span class="p">();</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">RunPerf</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="n">RunBenchmark</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -609,7 +609,7 @@
 </span></span><span class="line"><span class="cl">        <span class="k">auto</span> <span class="n">half</span> <span class="o">=</span> <span class="n">length</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        
 </span></span><span class="line"><span class="cl">        <span class="c1">// multiplication (by 1) is needed for GCC to generate CMOV
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">first</span> <span class="o">+=</span> <span class="n">comp</span><span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="n">half</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="n">half</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl">        <span class="n">first</span> <span class="o">+=</span> <span class="n">comp</span><span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="n">half</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="n">half</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        
 </span></span><span class="line"><span class="cl">        <span class="n">length</span> <span class="o">=</span> <span class="n">half</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
@@ -707,19 +707,19 @@
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">FastQueue</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Both counters are written by the producer, read by the consumer(s)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// Before/after a Write operation, both counters contain the same value
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span></span><span class="line"><span class="cl">    <span class="c1">// Before/after a Write operation, both counters contain the same value
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="c1">// [WriteCounter, ReadCounter] defines the area of reading
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">alignas</span><span class="p">(</span><span class="n">CACHE_LINE_SIZE</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">mReadCounter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span></span><span class="line"><span class="cl">    <span class="k">alignas</span><span class="p">(</span><span class="n">CACHE_LINE_SIZE</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">mReadCounter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">    <span class="c1">// [ReadCounter, WriteCounter] defines the area of writing
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">alignas</span><span class="p">(</span><span class="n">CACHE_LINE_SIZE</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">mWriteCounter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span></span><span class="line"><span class="cl">    <span class="k">alignas</span><span class="p">(</span><span class="n">CACHE_LINE_SIZE</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">mWriteCounter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">    <span class="k">alignas</span><span class="p">(</span><span class="n">CACHE_LINE_SIZE</span><span class="p">)</span> <span class="kt">uint8_t</span> <span class="n">mBuffer</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// simplified code!
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="n">QProducer</span><span class="o">::</span><span class="n">Write</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">byte</span><span class="o">&gt;</span> <span class="n">buffer</span><span class="p">)</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">QProducer</span><span class="o">::</span><span class="n">Write</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">span</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">byte</span><span class="o">&gt;</span> <span class="n">buffer</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">payloadSize</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int32_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">buffer</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="n">mLocalCounter</span> <span class="o">+=</span> <span class="n">payloadSize</span><span class="p">;</span>
@@ -785,8 +785,8 @@
 </span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">payloadSize</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int32_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">buffer</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="n">mLocalCounter</span> <span class="o">+=</span> <span class="n">payloadSize</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// we &#34;reserve&#34; more space (X% of the total queue)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// to avoid touching this cache line on every message written
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">mCachedWriteCounter</span> <span class="o">&lt;</span> <span class="n">mLocalCounter</span><span class="p">)</span> <span class="p">{</span>
+</span></span></span><span class="line"><span class="cl">    <span class="c1">// to avoid touching this cache line on every message written
+</span></span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">mCachedWriteCounter</span> <span class="o">&lt;</span> <span class="n">mLocalCounter</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="n">mCachedWriteCounter</span> <span class="o">=</span> <span class="n">Align</span><span class="o">&lt;</span><span class="n">Q_WRITE_COUNTER_BLOCK_BYTES</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mLocalCounter</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="n">mQ</span><span class="o">-&gt;</span><span class="n">mWriteCounter</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="n">mCachedWriteCounter</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">memory_order_release</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
@@ -888,7 +888,9 @@
     <section class="copyright">
         &copy; 
         
-        2025 Zhengnan Hua
+            2025 - 
+        
+        2026 Zhengnan Hua
     </section>
     
     <section class="powerby">

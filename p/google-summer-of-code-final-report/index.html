@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Adapting HPX&rsquo;s Parallel Algorithms for Usage with Senders and Receivers What is partitioner_with_cleanup in HPX What are Senders and Receivers What is this project about Difficulties and challenges Completed works Future works Acknowledgments This report presents the final outcomes of my Google Summer of Code 2025 project with the Ste||ar Group and serves as complete documentation for anyone interested in the implementation details and results.\n">
 <title>Google Summer of Code Final Report</title>
@@ -56,7 +56,7 @@
                     
                     
                         
-                        <img src="/img/gumi_hu_bc747df7e1102d9e.jpg" width="300"
+                        <img src="/img/gumi_hu_c60ea5320f40ba1a.jpg" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -350,7 +350,7 @@
 </h2><p><img src="/p/google-summer-of-code-final-report/image.png"
 	width="1280"
 	height="640"
-	srcset="/p/google-summer-of-code-final-report/image_hu_fc3e2176e42c3946.png 480w, /p/google-summer-of-code-final-report/image_hu_fc0288407c370265.png 1024w"
+	srcset="/p/google-summer-of-code-final-report/image_hu_db9f94b1bf1302fa.png 480w, /p/google-summer-of-code-final-report/image_hu_36ef27558d729a71.png 1024w"
 	loading="lazy"
 	
 		alt="HPX Logo"
@@ -418,7 +418,7 @@
 <img src="/p/google-summer-of-code-final-report/process.png"
 	width="465"
 	height="665"
-	srcset="/p/google-summer-of-code-final-report/process_hu_6ad44592e903cda3.png 480w, /p/google-summer-of-code-final-report/process_hu_c9a1f84080d06089.png 1024w"
+	srcset="/p/google-summer-of-code-final-report/process_hu_d768a3ac0bd6cd02.png 480w, /p/google-summer-of-code-final-report/process_hu_a05bf3f211a8861f.png 1024w"
 	loading="lazy"
 	
 		alt="Working Process"
@@ -469,21 +469,21 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdexec/execution.hpp&gt;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Create a thread pool and get its scheduler
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">stdexec</span><span class="o">::</span><span class="n">static_thread_pool</span> <span class="n">pool</span><span class="p">{</span><span class="mi">2</span><span class="p">};</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">stdexec</span><span class="o">::</span><span class="n">static_thread_pool</span> <span class="n">pool</span><span class="p">{</span><span class="mi">2</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">scheduler</span> <span class="o">=</span> <span class="n">pool</span><span class="p">.</span><span class="n">get_scheduler</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">s</span> <span class="o">=</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">just</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>                           <span class="c1">// just() describes &#34;generate 42&#34;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="o">|</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">continue_on</span><span class="p">(</span><span class="n">scheduler</span><span class="p">)</span>             <span class="c1">// continue_on() switches execution to the pool&#39;s scheduler
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="o">|</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">then</span><span class="p">([](</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span> <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="p">});</span>  <span class="c1">// then() describes &#34;times x by 2&#34;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span></span><span class="line"><span class="cl">           <span class="o">|</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">continue_on</span><span class="p">(</span><span class="n">scheduler</span><span class="p">)</span>             <span class="c1">// continue_on() switches execution to the pool&#39;s scheduler
+</span></span></span><span class="line"><span class="cl">           <span class="o">|</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">then</span><span class="p">([](</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span> <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span> <span class="p">});</span>  <span class="c1">// then() describes &#34;times x by 2&#34;
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="c1">// sync_wait() explicitly connects a receiver and starts it
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">auto</span> <span class="p">[</span><span class="n">result</span><span class="p">]</span> <span class="o">=</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">sync_wait</span><span class="p">(</span><span class="n">s</span><span class="p">).</span><span class="n">value</span><span class="p">();</span>
+</span></span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="p">[</span><span class="n">result</span><span class="p">]</span> <span class="o">=</span> <span class="n">stdexec</span><span class="o">::</span><span class="n">sync_wait</span><span class="p">(</span><span class="n">s</span><span class="p">).</span><span class="n">value</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Result = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>          <span class="c1">// prints: 84
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="what-is-this-project-about">What is this project about
@@ -618,7 +618,9 @@ Provide a comprehensive suite of tests for the affected algorithms. Each test ev
     <section class="copyright">
         &copy; 
         
-        2025 Zhengnan Hua
+            2025 - 
+        
+        2026 Zhengnan Hua
     </section>
     
     <section class="powerby">
