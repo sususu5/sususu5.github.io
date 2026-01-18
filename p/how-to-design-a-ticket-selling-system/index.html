@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="How to Design a Chat System at Scale Requirements Functional Requirements One-to-One Chat: Real-time online message delivery. Reliable offline message storage and retrieval. Group Chat: Support for small to medium groups (&lt; 200 members). Presence Status: Real-time indicators for Online/Offline/Busy states. Non-functional Requirements Scalability: Support 1 Billion registered users. Low Latency: End-to-end latency &lt; 500ms (aiming for near real-time). High Consistency: Messages must be delivered in order (causal consistency) and exactly once. Fault Tolerance: The system must be resilient to server failures without data loss. Communication Protocols (Message Model) To achieve low latency and bi-directional communication, we compare the following mechanisms:\n">
-<title>How to Design a Chat System</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="How to Design a Ticket Selling System Functional Requirements Purchase Tickets: Users can buy tickets. Refund Tickets: Users can withdraw/refund tickets. Select Time: Users can choose the event time. Payment Processing: Handle user payments securely. Real-time Availability: Users should see the number of remaining tickets. Seat Selection: Users can choose their specific seats. Two-Phase Purchasing: Ticket buying is split into reservation and payment. If payment isn&rsquo;t completed within a pre-defined window (e.g., 15 minutes), the reservation is released. Non-functional Requirements High Concurrency: The system must handle a massive spike in read and write traffic immediately after sales open. High Availability: The system must remain responsive and usable during peak traffic. Consistency: Ensure strong consistency for inventory to prevent over-selling. Back-of-the-envelope Calculation Assumptions:\n">
+<title>How to Design a Ticket Selling System</title>
 
-<link rel='canonical' href='https://sususu5.github.io/p/how-to-design-a-chat-system/'>
+<link rel='canonical' href='https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/'>
 
-<link rel="stylesheet" href="/scss/style.min.63d7f05a1f7147db682a84c0f9b16331f129dc8c7848a764f7189f277b24bd4d.css"><meta property='og:title' content="How to Design a Chat System">
-<meta property='og:description' content="How to Design a Chat System at Scale Requirements Functional Requirements One-to-One Chat: Real-time online message delivery. Reliable offline message storage and retrieval. Group Chat: Support for small to medium groups (&lt; 200 members). Presence Status: Real-time indicators for Online/Offline/Busy states. Non-functional Requirements Scalability: Support 1 Billion registered users. Low Latency: End-to-end latency &lt; 500ms (aiming for near real-time). High Consistency: Messages must be delivered in order (causal consistency) and exactly once. Fault Tolerance: The system must be resilient to server failures without data loss. Communication Protocols (Message Model) To achieve low latency and bi-directional communication, we compare the following mechanisms:\n">
-<meta property='og:url' content='https://sususu5.github.io/p/how-to-design-a-chat-system/'>
+<link rel="stylesheet" href="/scss/style.min.63d7f05a1f7147db682a84c0f9b16331f129dc8c7848a764f7189f277b24bd4d.css"><meta property='og:title' content="How to Design a Ticket Selling System">
+<meta property='og:description' content="How to Design a Ticket Selling System Functional Requirements Purchase Tickets: Users can buy tickets. Refund Tickets: Users can withdraw/refund tickets. Select Time: Users can choose the event time. Payment Processing: Handle user payments securely. Real-time Availability: Users should see the number of remaining tickets. Seat Selection: Users can choose their specific seats. Two-Phase Purchasing: Ticket buying is split into reservation and payment. If payment isn&rsquo;t completed within a pre-defined window (e.g., 15 minutes), the reservation is released. Non-functional Requirements High Concurrency: The system must handle a massive spike in read and write traffic immediately after sales open. High Availability: The system must remain responsive and usable during peak traffic. Consistency: Ensure strong consistency for inventory to prevent over-selling. Back-of-the-envelope Calculation Assumptions:\n">
+<meta property='og:url' content='https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/'>
 <meta property='og:site_name' content='Zhengnan Hua'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-12-24T16:38:41&#43;08:00'/><meta property='article:modified_time' content='2025-12-24T16:38:41&#43;08:00'/>
-<meta name="twitter:title" content="How to Design a Chat System">
-<meta name="twitter:description" content="How to Design a Chat System at Scale Requirements Functional Requirements One-to-One Chat: Real-time online message delivery. Reliable offline message storage and retrieval. Group Chat: Support for small to medium groups (&lt; 200 members). Presence Status: Real-time indicators for Online/Offline/Busy states. Non-functional Requirements Scalability: Support 1 Billion registered users. Low Latency: End-to-end latency &lt; 500ms (aiming for near real-time). High Consistency: Messages must be delivered in order (causal consistency) and exactly once. Fault Tolerance: The system must be resilient to server failures without data loss. Communication Protocols (Message Model) To achieve low latency and bi-directional communication, we compare the following mechanisms:\n">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2026-01-07T15:31:14&#43;08:00'/><meta property='article:modified_time' content='2026-01-07T15:31:14&#43;08:00'/>
+<meta name="twitter:title" content="How to Design a Ticket Selling System">
+<meta name="twitter:description" content="How to Design a Ticket Selling System Functional Requirements Purchase Tickets: Users can buy tickets. Refund Tickets: Users can withdraw/refund tickets. Select Time: Users can choose the event time. Payment Processing: Handle user payments securely. Real-time Availability: Users should see the number of remaining tickets. Seat Selection: Users can choose their specific seats. Two-Phase Purchasing: Ticket buying is split into reservation and payment. If payment isn&rsquo;t completed within a pre-defined window (e.g., 15 minutes), the reservation is released. Non-functional Requirements High Concurrency: The system must handle a massive spike in read and write traffic immediately after sales open. High Availability: The system must remain responsive and usable during peak traffic. Consistency: Ensure strong consistency for inventory to prevent over-selling. Back-of-the-envelope Calculation Assumptions:\n">
     </head>
     <body class="
     article-page
@@ -259,22 +259,18 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#requirements">Requirements</a>
+    <li><a href="#functional-requirements">Functional Requirements</a></li>
+    <li><a href="#non-functional-requirements">Non-functional Requirements</a></li>
+    <li><a href="#back-of-the-envelope-calculation">Back-of-the-envelope Calculation</a></li>
+    <li><a href="#high-level-design">High-level Design</a></li>
+    <li><a href="#design-deep-dive">Design Deep Dive</a>
       <ol>
-        <li><a href="#functional-requirements">Functional Requirements</a></li>
-        <li><a href="#non-functional-requirements">Non-functional Requirements</a></li>
+        <li><a href="#1-inventory-deduction">1. Inventory Deduction</a></li>
+        <li><a href="#2-the-atomicity-challenge">2. The Atomicity Challenge</a></li>
+        <li><a href="#3-the-dual-write-problem">3. The Dual-Write Problem</a></li>
+        <li><a href="#4-the-15-minute-release-strategy">4. The 15-Minute Release Strategy</a></li>
       </ol>
     </li>
-    <li><a href="#communication-protocols-message-model">Communication Protocols (Message Model)</a></li>
-    <li><a href="#architecture--scalability">Architecture &amp; Scalability</a>
-      <ol>
-        <li><a href="#connection-management-session-affinity">Connection Management (Session Affinity)</a></li>
-        <li><a href="#message-synchronization--throughput">Message Synchronization &amp; Throughput</a></li>
-        <li><a href="#global-distribution-edge-aggregation">Global Distribution (Edge Aggregation)</a></li>
-      </ol>
-    </li>
-    <li><a href="#group-chat-design">Group Chat Design</a></li>
-    <li><a href="#storage--offline-buffering">Storage &amp; Offline Buffering</a></li>
   </ol>
 </nav>
         </div>
@@ -302,7 +298,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/how-to-design-a-chat-system/">How to Design a Chat System</a>
+            <a href="/p/how-to-design-a-ticket-selling-system/">How to Design a Ticket Selling System</a>
         </h2>
     
         
@@ -324,7 +320,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Dec 24, 2025</time>
+                <time class="article-time--published">Jan 07, 2026</time>
             </div>
         
 
@@ -339,7 +335,7 @@
 
 
                 <time class="article-time--reading">
-                    4 minute read
+                    3 minute read
                 </time>
             </div>
         
@@ -354,209 +350,106 @@
     <section class="article-content">
     
     
-    <h1 id="how-to-design-a-chat-system-at-scale">How to Design a Chat System at Scale
-</h1><h2 id="requirements">Requirements
-</h2><h3 id="functional-requirements">Functional Requirements
-</h3><ol>
-<li><strong>One-to-One Chat</strong>:
-<ul>
-<li>Real-time online message delivery.</li>
-<li>Reliable offline message storage and retrieval.</li>
-</ul>
-</li>
-<li><strong>Group Chat</strong>:
-<ul>
-<li>Support for small to medium groups (&lt; 200 members).</li>
-</ul>
-</li>
-<li><strong>Presence Status</strong>:
-<ul>
-<li>Real-time indicators for Online/Offline/Busy states.</li>
-</ul>
-</li>
+    <h1 id="how-to-design-a-ticket-selling-system">How to Design a Ticket Selling System
+</h1><h2 id="functional-requirements">Functional Requirements
+</h2><ol>
+<li><strong>Purchase Tickets:</strong> Users can buy tickets.</li>
+<li><strong>Refund Tickets:</strong> Users can withdraw/refund tickets.</li>
+<li><strong>Select Time:</strong> Users can choose the event time.</li>
+<li><strong>Payment Processing:</strong> Handle user payments securely.</li>
+<li><strong>Real-time Availability:</strong> Users should see the number of remaining tickets.</li>
+<li><strong>Seat Selection:</strong> Users can choose their specific seats.</li>
+<li><strong>Two-Phase Purchasing:</strong> Ticket buying is split into reservation and payment. If payment isn&rsquo;t completed within a pre-defined window (e.g., 15 minutes), the reservation is released.</li>
 </ol>
-<h3 id="non-functional-requirements">Non-functional Requirements
-</h3><ol>
-<li><strong>Scalability</strong>: Support <strong>1 Billion</strong> registered users.</li>
-<li><strong>Low Latency</strong>: End-to-end latency <strong>&lt; 500ms</strong> (aiming for near real-time).</li>
-<li><strong>High Consistency</strong>: Messages must be delivered in order (causal consistency) and exactly once.</li>
-<li><strong>Fault Tolerance</strong>: The system must be resilient to server failures without data loss.</li>
+<h2 id="non-functional-requirements">Non-functional Requirements
+</h2><ol>
+<li><strong>High Concurrency:</strong> The system must handle a massive spike in read and write traffic immediately after sales open.</li>
+<li><strong>High Availability:</strong> The system must remain responsive and usable during peak traffic.</li>
+<li><strong>Consistency:</strong> Ensure strong consistency for inventory to prevent over-selling.</li>
 </ol>
-<hr>
-<h2 id="communication-protocols-message-model">Communication Protocols (Message Model)
-</h2><p>To achieve low latency and bi-directional communication, we compare the following mechanisms:</p>
-<ol>
-<li><strong>Polling</strong>: Client periodically requests updates. <em>Inefficient due to high overhead and latency.</em></li>
-<li><strong>Long Polling</strong>: Client holds connection until data is available. <em>Better than polling, but still resource-heavy on server headers/handshakes.</em></li>
-<li><strong>WebSocket (Recommended)</strong>: Persistent, full-duplex TCP connection. Ideal for real-time messaging.</li>
-<li><strong>QUIC / HTTP/3</strong>: UDP-based transport with congestion control. <em>Excellent for unstable networks (mobile clients) and reducing head-of-line blocking.</em></li>
-</ol>
-<p><strong>Decision</strong>: <strong>WebSocket</strong> is the industry standard for the connection layer due to its widespread support and efficiency for stateful connections.</p>
-<hr>
-<h2 id="architecture--scalability">Architecture &amp; Scalability
-</h2><h3 id="connection-management-session-affinity">Connection Management (Session Affinity)
-</h3><p>To ensure low latency, we need a stateful connection layer (Gateway/Chat Server). A user&rsquo;s WebSocket connection must persist on a specific server.</p>
-<p><strong>Service Discovery &amp; Session Storage:</strong></p>
-<p>We use a centralized Key-Value store (e.g., Redis) to map users to their physical servers.</p>
+<h2 id="back-of-the-envelope-calculation">Back-of-the-envelope Calculation
+</h2><p><em>Assumptions:</em></p>
 <ul>
-<li><strong>Data Structure</strong>: <code>&lt;user_id, {last_heartbeat: timestamp, chat_server_id, ...}&gt;</code></li>
-<li><strong>Workflow</strong>: When User A wants to send a message to User B, the router looks up User B&rsquo;s <code>chat_server_id</code> in Redis to forward the payload.</li>
+<li>Total tickets: 100,000</li>
+<li>Active users checking tickets: 5 million</li>
+<li>Time window: 1 minute (traffic spike upon opening)</li>
 </ul>
-<p><strong>Capacity Planning (Memory for Sessions):</strong></p>
-<ul>
-<li>Total Users: 1B</li>
-<li>Daily Active Users (DAU): 1B * 20% = 200M</li>
-<li>Peak Concurrent Users: 200M * 25% = 50M</li>
-<li>Memory Usage per User Session: approx 100 bytes (fd, ip_addr, port, state, user_id&hellip;)</li>
-<li>Total Memory Required: 50M * 100 bytes = 5GB</li>
-</ul>
-<p><em>Note: 5GB fits easily into the RAM of a modern Redis cluster.</em></p>
-<p><img src="/p/how-to-design-a-chat-system/session_affinity.png"
-	width="1542"
-	height="638"
-	srcset="/p/how-to-design-a-chat-system/session_affinity_hu_27f898c87af98d16.png 480w, /p/how-to-design-a-chat-system/session_affinity_hu_d07f71721aff593c.png 1024w"
+<p><em>Read QPS:</em>
+If requests are evenly distributed over 1 minute:</p>
+<blockquote>
+<p>5,000,000 req / 60 sec ≈ 83,333 req/sec</p>
+</blockquote>
+<p>(Rounded to ~80,000 QPS)</p>
+<p><em>Write QPS:</em>
+Assuming 80% of active users attempt to buy:</p>
+<blockquote>
+<p>80,000 req/sec * 0.8 = 64,000 req/sec</p>
+</blockquote>
+<p><em>Peak Traffic:</em>
+In the first few seconds, traffic could be 5-10x the average, requiring the system to handle significant burst loads.</p>
+<h2 id="high-level-design">High-level Design
+</h2><p><img src="/p/how-to-design-a-ticket-selling-system/design1.png"
+	width="2094"
+	height="1126"
+	srcset="/p/how-to-design-a-ticket-selling-system/design1_hu_124f1937efdd26a8.png 480w, /p/how-to-design-a-ticket-selling-system/design1_hu_497bd607a8d194a8.png 1024w"
 	loading="lazy"
 	
-		alt="Session Affinity"
+		alt="High Level Design"
 	
 	
 		class="gallery-image" 
-		data-flex-grow="241"
-		data-flex-basis="580px"
+		data-flex-grow="185"
+		data-flex-basis="446px"
 	
 ></p>
-<h3 id="message-synchronization--throughput">Message Synchronization &amp; Throughput
-</h3><p>To decouple message ingestion from delivery and storage, we introduce a <strong>Message Queue</strong> (e.g., Kafka) between the connection layer and the backend logic.</p>
-<p><strong>Throughput Calculation (Peak Time):</strong></p>
-<ul>
-<li>Average message rate: 0.2 msg/sec/user</li>
-<li>Total Throughput: 50M users * 0.2 = 10M msg/s</li>
-<li>Message Size:
-<ul>
-<li>Header (IDs): 8 * 3 = 24 bytes</li>
-<li>Content: 600-800 bytes</li>
-<li><strong>Total (Compressed)</strong>: approx 0.5KB</li>
-</ul>
-</li>
-<li>Bandwidth: 10M msg/s * 0.5KB = 5GB/s</li>
-</ul>
-<p><strong>Scaling Strategy:</strong></p>
-<ul>
-<li><strong>Sharding</strong>: Since 5GB/s is high for a single cluster, we must shard the Message Queue by <code>user_id</code> (or <code>group_id</code> for groups) to ensure ordering while distributing load.</li>
-<li><strong>Server Count</strong>:
-<ul>
-<li>Benchmark: WhatsApp (Erlang-based) achieved 2M concurrent connections per server.</li>
-<li>Required Chat Servers: 50M / 2M = 25 Servers.</li>
-<li><em>Result: This is highly manageable with modern C++ asynchronous I/O (epoll/io_uring).</em></li>
-</ul>
-</li>
-</ul>
-<p><img src="/p/how-to-design-a-chat-system/message_sync.png"
-	width="1532"
-	height="1118"
-	srcset="/p/how-to-design-a-chat-system/message_sync_hu_940a89a74141f10d.png 480w, /p/how-to-design-a-chat-system/message_sync_hu_6211a90ae3ad6446.png 1024w"
+<h2 id="design-deep-dive">Design Deep Dive
+</h2><h3 id="1-inventory-deduction">1. Inventory Deduction
+</h3><p><strong>Challenge:</strong> With only 1 ticket left and 1,000 requests flooding the queue, how do we efficiently block the 999 failing requests and implement &ldquo;inventory pre-deduction&rdquo;?</p>
+<p><strong>Solution:</strong>
+When the writing service accepts a request, the pre-deduction should occur in a Redis cache and be queued in the Message Queue (MQ) simultaneously.
+If an order is cancelled, the inventory must be restored in Redis, and the MQ should be notified to ignore any processing related to that specific cancelled transaction.</p>
+<p><img src="/p/how-to-design-a-ticket-selling-system/design2.png"
+	width="2122"
+	height="1162"
+	srcset="/p/how-to-design-a-ticket-selling-system/design2_hu_4f2fa56f70a3ea13.png 480w, /p/how-to-design-a-ticket-selling-system/design2_hu_1fd72abdbf3f19b4.png 1024w"
 	loading="lazy"
 	
-		alt="Message Sync"
+		alt="Detailed Design"
 	
 	
 		class="gallery-image" 
-		data-flex-grow="137"
-		data-flex-basis="328px"
+		data-flex-grow="182"
+		data-flex-basis="438px"
 	
 ></p>
-<h3 id="global-distribution-edge-aggregation">Global Distribution (Edge Aggregation)
-</h3><p>To handle the 5GB/s global traffic and reduce latency for cross-region users, we use <strong>Edge Aggregation</strong>.</p>
-<ul>
-<li><strong>Mechanism</strong>: Users connect to the nearest Edge Node. Edge Nodes aggregate messages and send batch requests to the Central Data Center (or cross-region sync).</li>
-<li><strong>Edge Capacity</strong>:
-<ul>
-<li>Assume one region handles 2M users.</li>
-<li>Traffic: 2M * 0.2 * 0.5KB = 200MB/s.</li>
-<li><em>Feasibility</em>: A single modern server with 10Gbps NIC can handle this comfortably.</li>
-</ul>
-</li>
-</ul>
-<p><img src="/p/how-to-design-a-chat-system/edge_aggr.png"
-	width="1538"
-	height="1134"
-	srcset="/p/how-to-design-a-chat-system/edge_aggr_hu_64c27bf035d1616b.png 480w, /p/how-to-design-a-chat-system/edge_aggr_hu_d2b5383cff5bd964.png 1024w"
-	loading="lazy"
-	
-		alt="Edge Aggr &#43; Center Sync"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="135"
-		data-flex-basis="325px"
-	
-></p>
-<hr>
-<h2 id="group-chat-design">Group Chat Design
-</h2><p>Group chats introduce a &ldquo;Fan-out&rdquo; problem (1 sender, N receivers).</p>
-<p><strong>Data Model:</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nt">&#34;group_id&#34;</span><span class="p">:</span> <span class="mi">1001</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">  <span class="nt">&#34;message_id&#34;</span><span class="p">:</span> <span class="mi">987654321</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">  <span class="nt">&#34;sender_id&#34;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">  <span class="nt">&#34;content&#34;</span><span class="p">:</span> <span class="s2">&#34;Hello World&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">  <span class="nt">&#34;timestamp&#34;</span><span class="p">:</span> <span class="mi">1700000000</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>Routing Strategy:</strong></p>
-<p>Instead of broadcasting to all users immediately, we use a <strong>Group Register/Service</strong>.</p>
+<h3 id="2-the-atomicity-challenge">2. The Atomicity Challenge
+</h3><p><strong>Challenge:</strong> Redis <code>GET</code> and <code>DECR</code> operations are not atomic by default. If two users request the last ticket simultaneously, a race condition could lead to over-selling.</p>
+<p><strong>Solution:</strong>
+Use <strong>Lua scripts</strong> in Redis. Lua scripts are executed atomically; even if multiple requests arrive at the same time, Redis executes the script sequentially, ensuring the check-and-decrement logic is safe.</p>
+<h3 id="3-the-dual-write-problem">3. The Dual-Write Problem
+</h3><p><strong>Challenge:</strong> If the service crashes or experiences network issues (network jitter) after updating Redis but before sending the message to the MQ, the inventory data becomes inconsistent (tickets &ldquo;disappear&rdquo;).</p>
+<p><strong>Solution:</strong>
+Use <strong>Transactional Messages</strong> (e.g., in RocketMQ). The flow is:</p>
 <ol>
-<li><strong>Group Registration</strong>: Records which Chat Servers host <em>online</em> members of a specific group.</li>
-<li><strong>Delivery</strong>: The message is routed only to those specific Chat Servers.</li>
-<li><strong>Optimization</strong>: For large groups, limit the fan-out by only pushing notifications to active members, while others pull on demand.</li>
+<li><strong>Prepare:</strong> The writing service sends a &ldquo;half message&rdquo; to the MQ (invisible to consumers).</li>
+<li><strong>Local Transaction:</strong> Execute the Redis Lua script to deduct inventory.</li>
+<li><strong>Commit/Rollback:</strong>
+<ul>
+<li>If Redis deduction succeeds, send a <strong>Commit</strong> to the MQ (making the message visible).</li>
+<li>If it fails, send a <strong>Rollback</strong>.</li>
+</ul>
+</li>
+<li><strong>Reconciliation:</strong> If the service crashes before step 3, the MQ broker periodically queries the service to check the status of the local transaction and decide whether to commit or roll back.</li>
 </ol>
-<p><strong>Architectural Patterns:</strong></p>
+<h3 id="4-the-15-minute-release-strategy">4. The 15-Minute Release Strategy
+</h3><p><strong>Challenge:</strong> How to release inventory for orders that remain unpaid after 15 minutes?</p>
+<p><strong>Solution:</strong>
+Leverage <strong>Delay Queues</strong> (available in RocketMQ or via plugins in RabbitMQ).</p>
 <ol>
-<li><strong>Push Model / Write Fanout</strong>
-<ul>
-<li>Suitable for small groups and real-time communication.</li>
-<li>Mechanism: When a user sends a message to a group, the message is pushed to all online members of the group.</li>
-<li>Pros: Fast read operations, users only need to read from their inbox.</li>
-<li>Cons: High write overhead, the more members in a group, the more messages need to be pushed.</li>
-</ul>
-</li>
-<li><strong>Pull Model / Read Fanout</strong>
-<ul>
-<li>Suitable for large groups and offline messages.</li>
-<li>Mechanism: When a user sends a message to a group, the message is pushed to the group register/service, and the members will pull the messages from the group register/service on demand.</li>
-<li>Pros: Fast write operations, users only need to write to the group register/service.</li>
-<li>Cons: High read overhead, the more members in a group, the more messages need to be pulled.</li>
-</ul>
-</li>
+<li>When an order is created, the service sends a message with a 15-minute delay to the MQ.</li>
+<li>After 15 minutes, the consumer receives the message.</li>
+<li>The consumer checks the database for the order&rsquo;s payment status. If unpaid, it cancels the order and restores the inventory.</li>
 </ol>
-<hr>
-<h2 id="storage--offline-buffering">Storage &amp; Offline Buffering
-</h2><p>We need a tiered storage strategy: fast write for recent messages and cost-effective storage for history.</p>
-<p><strong>Capacity Planning (Storage):</strong></p>
-<ul>
-<li>Total Messages/Day: 200M DAU * 40 msg/user = 8B messages</li>
-<li>Offline Message Ratio: 15%</li>
-<li>Daily Storage: 8B * 15% * 0.5KB = 0.6TB / Day</li>
-<li>Monthly Storage: 0.6TB * 30 = 18TB</li>
-</ul>
-<p><strong>Technology Choice:</strong></p>
-<ul>
-<li><strong>Hot Data (Recent)</strong>: <strong>NoSQL (Cassandra / DynamoDB / HBase)</strong>. Optimized for write-heavy workloads and time-series data.</li>
-<li><strong>Cold Data (History)</strong>: Object Storage (S3) or Compressed Archives.</li>
-<li><strong>Offline Buffer</strong>: Redis Streams or temporary KV storage to hold messages until the user comes online.</li>
-</ul>
 
 </section>
 
@@ -581,12 +474,12 @@
             
                 
 <article class="">
-    <a href="/p/how-to-design-a-ticket-selling-system/">
+    <a href="/p/how-to-design-a-chat-system/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">How to Design a Ticket Selling System</h2>
+            <h2 class="article-title">How to Design a Chat System</h2>
         </div>
     </a>
 </article>

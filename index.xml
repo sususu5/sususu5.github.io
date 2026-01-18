@@ -7,7 +7,115 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>Zhengnan Hua</copyright>
-        <lastBuildDate>Wed, 24 Dec 2025 16:38:41 +0800</lastBuildDate><atom:link href="https://sususu5.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 07 Jan 2026 15:31:14 +0800</lastBuildDate><atom:link href="https://sususu5.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to Design a Ticket Selling System</title>
+        <link>https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/</link>
+        <pubDate>Wed, 07 Jan 2026 15:31:14 +0800</pubDate>
+        
+        <guid>https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/</guid>
+        <description>&lt;h1 id=&#34;how-to-design-a-ticket-selling-system&#34;&gt;How to Design a Ticket Selling System
+&lt;/h1&gt;&lt;h2 id=&#34;functional-requirements&#34;&gt;Functional Requirements
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Purchase Tickets:&lt;/strong&gt; Users can buy tickets.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Refund Tickets:&lt;/strong&gt; Users can withdraw/refund tickets.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Select Time:&lt;/strong&gt; Users can choose the event time.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Payment Processing:&lt;/strong&gt; Handle user payments securely.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Real-time Availability:&lt;/strong&gt; Users should see the number of remaining tickets.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Seat Selection:&lt;/strong&gt; Users can choose their specific seats.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Two-Phase Purchasing:&lt;/strong&gt; Ticket buying is split into reservation and payment. If payment isn&amp;rsquo;t completed within a pre-defined window (e.g., 15 minutes), the reservation is released.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;non-functional-requirements&#34;&gt;Non-functional Requirements
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;High Concurrency:&lt;/strong&gt; The system must handle a massive spike in read and write traffic immediately after sales open.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;High Availability:&lt;/strong&gt; The system must remain responsive and usable during peak traffic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Consistency:&lt;/strong&gt; Ensure strong consistency for inventory to prevent over-selling.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;back-of-the-envelope-calculation&#34;&gt;Back-of-the-envelope Calculation
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;Assumptions:&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Total tickets: 100,000&lt;/li&gt;
+&lt;li&gt;Active users checking tickets: 5 million&lt;/li&gt;
+&lt;li&gt;Time window: 1 minute (traffic spike upon opening)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Read QPS:&lt;/em&gt;
+If requests are evenly distributed over 1 minute:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;5,000,000 req / 60 sec ≈ 83,333 req/sec&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;(Rounded to ~80,000 QPS)&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Write QPS:&lt;/em&gt;
+Assuming 80% of active users attempt to buy:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;80,000 req/sec * 0.8 = 64,000 req/sec&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;em&gt;Peak Traffic:&lt;/em&gt;
+In the first few seconds, traffic could be 5-10x the average, requiring the system to handle significant burst loads.&lt;/p&gt;
+&lt;h2 id=&#34;high-level-design&#34;&gt;High-level Design
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/design1.png&#34;
+	width=&#34;2094&#34;
+	height=&#34;1126&#34;
+	srcset=&#34;https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/design1_hu_124f1937efdd26a8.png 480w, https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/design1_hu_497bd607a8d194a8.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;High Level Design&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;185&#34;
+		data-flex-basis=&#34;446px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;design-deep-dive&#34;&gt;Design Deep Dive
+&lt;/h2&gt;&lt;h3 id=&#34;1-inventory-deduction&#34;&gt;1. Inventory Deduction
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Challenge:&lt;/strong&gt; With only 1 ticket left and 1,000 requests flooding the queue, how do we efficiently block the 999 failing requests and implement &amp;ldquo;inventory pre-deduction&amp;rdquo;?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Solution:&lt;/strong&gt;
+When the writing service accepts a request, the pre-deduction should occur in a Redis cache and be queued in the Message Queue (MQ) simultaneously.
+If an order is cancelled, the inventory must be restored in Redis, and the MQ should be notified to ignore any processing related to that specific cancelled transaction.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/design2.png&#34;
+	width=&#34;2122&#34;
+	height=&#34;1162&#34;
+	srcset=&#34;https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/design2_hu_4f2fa56f70a3ea13.png 480w, https://sususu5.github.io/p/how-to-design-a-ticket-selling-system/design2_hu_1fd72abdbf3f19b4.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Detailed Design&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;182&#34;
+		data-flex-basis=&#34;438px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;2-the-atomicity-challenge&#34;&gt;2. The Atomicity Challenge
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Challenge:&lt;/strong&gt; Redis &lt;code&gt;GET&lt;/code&gt; and &lt;code&gt;DECR&lt;/code&gt; operations are not atomic by default. If two users request the last ticket simultaneously, a race condition could lead to over-selling.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Solution:&lt;/strong&gt;
+Use &lt;strong&gt;Lua scripts&lt;/strong&gt; in Redis. Lua scripts are executed atomically; even if multiple requests arrive at the same time, Redis executes the script sequentially, ensuring the check-and-decrement logic is safe.&lt;/p&gt;
+&lt;h3 id=&#34;3-the-dual-write-problem&#34;&gt;3. The Dual-Write Problem
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Challenge:&lt;/strong&gt; If the service crashes or experiences network issues (network jitter) after updating Redis but before sending the message to the MQ, the inventory data becomes inconsistent (tickets &amp;ldquo;disappear&amp;rdquo;).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Solution:&lt;/strong&gt;
+Use &lt;strong&gt;Transactional Messages&lt;/strong&gt; (e.g., in RocketMQ). The flow is:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Prepare:&lt;/strong&gt; The writing service sends a &amp;ldquo;half message&amp;rdquo; to the MQ (invisible to consumers).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Local Transaction:&lt;/strong&gt; Execute the Redis Lua script to deduct inventory.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Commit/Rollback:&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;If Redis deduction succeeds, send a &lt;strong&gt;Commit&lt;/strong&gt; to the MQ (making the message visible).&lt;/li&gt;
+&lt;li&gt;If it fails, send a &lt;strong&gt;Rollback&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reconciliation:&lt;/strong&gt; If the service crashes before step 3, the MQ broker periodically queries the service to check the status of the local transaction and decide whether to commit or roll back.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;4-the-15-minute-release-strategy&#34;&gt;4. The 15-Minute Release Strategy
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Challenge:&lt;/strong&gt; How to release inventory for orders that remain unpaid after 15 minutes?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Solution:&lt;/strong&gt;
+Leverage &lt;strong&gt;Delay Queues&lt;/strong&gt; (available in RocketMQ or via plugins in RabbitMQ).&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;When an order is created, the service sends a message with a 15-minute delay to the MQ.&lt;/li&gt;
+&lt;li&gt;After 15 minutes, the consumer receives the message.&lt;/li&gt;
+&lt;li&gt;The consumer checks the database for the order&amp;rsquo;s payment status. If unpaid, it cancels the order and restores the inventory.&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
         <title>How to Design a Chat System</title>
         <link>https://sususu5.github.io/p/how-to-design-a-chat-system/</link>
         <pubDate>Wed, 24 Dec 2025 16:38:41 +0800</pubDate>
